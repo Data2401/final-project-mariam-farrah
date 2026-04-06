@@ -1,0 +1,21 @@
+---
+title: "Heart Prediction Model"
+author: "Farrah Johnson and Mariam Ikram"
+date: "2026-04-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+heart <- read.csv("heart.csv")
+```
+
+```{r}
+glimpse(heart)
+summary(heart)
+```
+
