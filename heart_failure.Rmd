@@ -9,12 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
-heart <- read.csv("heart.csv")
+library(ggplot2)
 ```
 
 ```{r}
+heart <- read.csv("heart.csv")
 glimpse(heart)
 summary(heart)
 ```
