@@ -9,14 +9,90 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, include = FALSE}
 library(tidyverse)
 library(ggplot2)
+library(dplyr)
 ```
 
 ```{r}
 heart <- read.csv("heart.csv")
 glimpse(heart)
-summary(heart)
 ```
+
+
+
+```{r, include = FALSE}
+view(heart)
+```
+
+```{r}
+names(heart)
+range(heart$Age)
+
+```
+
+
+
+This shows an average.
+```{r}
+
+heart %>%
+  select(Age, Sex, HeartDisease, RestingBP, Cholesterol, MaxHR) %>%
+  mutate(HeartDisease = recode(HeartDisease,
+                                "1" = "Yes",
+                                "0" = "No")) %>%
+  arrange(Age) %>%
+  head(20)
+  
+heart %>%
+  select(Age, Sex, HeartDisease, RestingBP, Cholesterol, MaxHR) %>%
+  mutate(HeartDisease = recode(HeartDisease,
+                                "1" = "Yes",
+                                "0" = "No")) %>%
+  group_by(HeartDisease) %>%
+  summarise("Average Blood Pressure" = mean(RestingBP),
+            "Average Age" = mean(Age),
+            "Cholesterol" = mean(Cholesterol),
+            "Max Heart Rate" = mean(MaxHR))
+
+
+
+
+
+
+```
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

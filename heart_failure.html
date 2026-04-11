@@ -357,8 +357,6 @@ display: none;
 </div>
 
 
-<pre class="r"><code>library(tidyverse)
-library(ggplot2)</code></pre>
 <pre class="r"><code>heart &lt;- read.csv(&quot;heart.csv&quot;)
 glimpse(heart)</code></pre>
 <pre><code>## Rows: 918
@@ -375,28 +373,57 @@ glimpse(heart)</code></pre>
 ## $ Oldpeak        &lt;dbl&gt; 0.0, 1.0, 0.0, 1.5, 0.0, 0.0, 0.0, 0.0, 1.5, 0.0, 0.0, …
 ## $ ST_Slope       &lt;chr&gt; &quot;Up&quot;, &quot;Flat&quot;, &quot;Up&quot;, &quot;Flat&quot;, &quot;Up&quot;, &quot;Up&quot;, &quot;Up&quot;, &quot;Up&quot;, &quot;Fl…
 ## $ HeartDisease   &lt;int&gt; 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1…</code></pre>
-<pre class="r"><code>summary(heart)</code></pre>
-<pre><code>##       Age            Sex            ChestPainType        RestingBP    
-##  Min.   :28.00   Length:918         Length:918         Min.   :  0.0  
-##  1st Qu.:47.00   Class :character   Class :character   1st Qu.:120.0  
-##  Median :54.00   Mode  :character   Mode  :character   Median :130.0  
-##  Mean   :53.51                                         Mean   :132.4  
-##  3rd Qu.:60.00                                         3rd Qu.:140.0  
-##  Max.   :77.00                                         Max.   :200.0  
-##   Cholesterol      FastingBS       RestingECG            MaxHR      
-##  Min.   :  0.0   Min.   :0.0000   Length:918         Min.   : 60.0  
-##  1st Qu.:173.2   1st Qu.:0.0000   Class :character   1st Qu.:120.0  
-##  Median :223.0   Median :0.0000   Mode  :character   Median :138.0  
-##  Mean   :198.8   Mean   :0.2331                      Mean   :136.8  
-##  3rd Qu.:267.0   3rd Qu.:0.0000                      3rd Qu.:156.0  
-##  Max.   :603.0   Max.   :1.0000                      Max.   :202.0  
-##  ExerciseAngina        Oldpeak          ST_Slope          HeartDisease   
-##  Length:918         Min.   :-2.6000   Length:918         Min.   :0.0000  
-##  Class :character   1st Qu.: 0.0000   Class :character   1st Qu.:0.0000  
-##  Mode  :character   Median : 0.6000   Mode  :character   Median :1.0000  
-##                     Mean   : 0.8874                      Mean   :0.5534  
-##                     3rd Qu.: 1.5000                      3rd Qu.:1.0000  
-##                     Max.   : 6.2000                      Max.   :1.0000</code></pre>
+<pre class="r"><code>names(heart)</code></pre>
+<pre><code>##  [1] &quot;Age&quot;            &quot;Sex&quot;            &quot;ChestPainType&quot;  &quot;RestingBP&quot;     
+##  [5] &quot;Cholesterol&quot;    &quot;FastingBS&quot;      &quot;RestingECG&quot;     &quot;MaxHR&quot;         
+##  [9] &quot;ExerciseAngina&quot; &quot;Oldpeak&quot;        &quot;ST_Slope&quot;       &quot;HeartDisease&quot;</code></pre>
+<pre class="r"><code>range(heart$Age)</code></pre>
+<pre><code>## [1] 28 77</code></pre>
+<p>This shows an average.</p>
+<pre class="r"><code>heart %&gt;%
+  select(Age, Sex, HeartDisease, RestingBP, Cholesterol, MaxHR) %&gt;%
+  mutate(HeartDisease = recode(HeartDisease,
+                                &quot;1&quot; = &quot;Yes&quot;,
+                                &quot;0&quot; = &quot;No&quot;)) %&gt;%
+  arrange(Age) %&gt;%
+  head(20)</code></pre>
+<pre><code>##    Age Sex HeartDisease RestingBP Cholesterol MaxHR
+## 1   28   M           No       130         132   185
+## 2   29   M           No       120         243   160
+## 3   29   M           No       140         263   170
+## 4   29   M           No       130         204   202
+## 5   30   F           No       170         237   170
+## 6   31   M          Yes       120         270   153
+## 7   31   F           No       100         219   150
+## 8   32   M           No       125         254   155
+## 9   32   M           No       110         225   184
+## 10  32   M          Yes       118         529   130
+## 11  32   F           No       105         198   165
+## 12  32   M          Yes        95           0   127
+## 13  33   F          Yes       100         246   150
+## 14  33   M           No       120         298   185
+## 15  34   M           No       150         214   168
+## 16  34   M          Yes       140         156   180
+## 17  34   F           No       130         161   190
+## 18  34   M           No        98         220   150
+## 19  34   M          Yes       115           0   154
+## 20  34   F           No       118         210   192</code></pre>
+<pre class="r"><code>heart %&gt;%
+  select(Age, Sex, HeartDisease, RestingBP, Cholesterol, MaxHR) %&gt;%
+  mutate(HeartDisease = recode(HeartDisease,
+                                &quot;1&quot; = &quot;Yes&quot;,
+                                &quot;0&quot; = &quot;No&quot;)) %&gt;%
+  group_by(HeartDisease) %&gt;%
+  summarise(&quot;Average Blood Pressure&quot; = mean(RestingBP),
+            &quot;Average Age&quot; = mean(Age),
+            &quot;Cholesterol&quot; = mean(Cholesterol),
+            &quot;Max Heart Rate&quot; = mean(MaxHR))</code></pre>
+<pre><code>## # A tibble: 2 × 5
+##   HeartDisease Average Blood Pressu…¹ `Average Age` Cholesterol `Max Heart Rate`
+##   &lt;chr&gt;                         &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt;
+## 1 No                             130.          50.6        227.             148.
+## 2 Yes                            134.          55.9        176.             128.
+## # ℹ abbreviated name: ¹​`Average Blood Pressure`</code></pre>
 
 
 
