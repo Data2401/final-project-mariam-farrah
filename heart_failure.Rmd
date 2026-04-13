@@ -80,6 +80,10 @@ heart %>%
 ```{r}
 
 # cleaned heart data so the graph shows no zero values, histogram w/ facet wrap, changed the labels so it was more decipherable. I used cholesterol for this data because it seemed to have the highest correlation with heart disease, but I'll have to look into it further.
+## update: it's definitely NOT the highest factor of correlation!!!!
+
+
+# What seems to be the highest correlation among these factors with heart disease?
 
 heart_clean <- heart %>%
   filter(Cholesterol != 0)
@@ -93,7 +97,15 @@ ggplot(heart_clean, aes(x = Cholesterol, fill = "pink")) + geom_histogram(binwid
 
 ```
 
+```{r}
 
+cor(heart[, sapply(heart, is.numeric)])["HeartDisease", ]
+
+
+
+
+
+```
 
 
 
