@@ -37,38 +37,37 @@ range(heart$Age)
 
 
 
-```{r}
+```{r clean_comparisons}
 
 # Pulls out necessary data and changes the heart disease to a string to make it more decipherable 
+# The 0 and 1 values in heartdisease instead of yes and no was driving me crazy. I cleaned it up and stored it in a variable.
 
+heart_clean <- heart %>%
+  mutate(HeartDisease = factor(HeartDisease,
+                               levels = c(0, 1),
+                               labels = c("No", "Yes")))
 
 set.seed(123)
-random_sample <- heart %>%
+random_sample <- heart_clean %>%
   sample_n(20)
-
 #I set a seed here so the data we're pulling is more random, as head(20) will only pull the first 20. 
 
+
 random_sample %>%
-  select(Age, Sex, HeartDisease, RestingBP, Cholesterol, MaxHR) %>%
-  mutate(HeartDisease = recode(HeartDisease,
-                                "1" = "Yes",
-                                "0" = "No")) %>%
+  select(Age, Sex, HeartDisease, ExerciseAngina, ST_Slope, Oldpeak) %>%
+
   arrange(Age) %>%
   head(20)
 
 # gives an average for necessary data for a better comparison
 
 
-heart %>%
-  select(Age, Sex, HeartDisease, RestingBP, Cholesterol, MaxHR) %>%
-  mutate(HeartDisease = recode(HeartDisease,
-                                "1" = "Yes",
-                                "0" = "No")) %>%
+heart_clean %>%
+  select(Age, Sex, HeartDisease, ExerciseAngina, ST_Slope, Oldpeak) %>%
+  
   group_by(HeartDisease) %>%
-  summarise("Average Blood Pressure" = mean(RestingBP),
-            "Average Age" = mean(Age),
-            "Cholesterol" = mean(Cholesterol),
-            "Max Heart Rate" = mean(MaxHR))
+  summarise("Average Age" = mean(Age),
+            "Old Peak" = mean(Oldpeak))
 
 
 
@@ -77,27 +76,30 @@ heart %>%
 
 ```
 
-```{r}
-
-# cleaned heart data so the graph shows no zero values, histogram w/ facet wrap, changed the labels so it was more decipherable. I used cholesterol for this data because it seemed to have the highest correlation with heart disease, but I'll have to look into it further.
-## update: it's definitely NOT the highest factor of correlation!!!!
+```{r boxplot_correlations}
 
 
 # What seems to be the highest correlation among these factors with heart disease?
 
-heart_clean <- heart %>%
-  filter(Cholesterol != 0)
+# ST slope, exercise level, & Oldpeak have the highest correlation. ST slope is the segment on an ECG that shows when the heart rate drops below the baseline while under physical stress, with the slope telling us the direction of that drop (depression). The oldpeak measures the drop in a numerical value. 
+library(ggthemes)
+
+# I just discovered ggthemes, gonna play with this a bit
+
+ggplot(heart_clean, aes(x = factor(HeartDisease), y = Oldpeak, fill = factor(HeartDisease))) +
+  geom_boxplot(alpha = 0.5) +
+  labs(title = "Oldpeak Distribution with Heart Disease",
+       x = "Heart ") +
+  theme_minimal()
 
 
-ggplot(heart_clean, aes(x = Cholesterol, fill = "pink")) + geom_histogram(binwidth = 20) + facet_wrap(~HeartDisease, labeller = labeller(HeartDisease = c("1" = "Has Heart Disease", "0" = "No Heart Disease"))) + labs(title = "Cholesterol distribution",
-                                                                                                                                                                                                                        x = "Cholesterol level",
-                                                                                                                                                                                                                        y = "People"
-)
+
 
 
 ```
 
 ```{r}
+#double checking correlation
 
 cor(heart[, sapply(heart, is.numeric)])["HeartDisease", ]
 
