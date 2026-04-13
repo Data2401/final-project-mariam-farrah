@@ -70,10 +70,6 @@ heart_clean %>%
             "Old Peak" = mean(Oldpeak))
 
 
-
-
-
-
 ```
 
 ```{r boxplot_correlations}
@@ -92,20 +88,13 @@ ggplot(heart_clean, aes(x = factor(HeartDisease), y = Oldpeak, fill = factor(Hea
        x = "Heart ") +
   theme_minimal()
 
-
-
-
-
 ```
 
 ```{r}
-#double checking correlation
-
-cor(heart[, sapply(heart, is.numeric)])["HeartDisease", ]
-
-
-
-
+ggplot(heart_clean, aes(x = HeartDisease, y = Oldpeak)) +
+  geom_boxplot(alpha = 0.5) +
+  geom_dotplot(binaxis = 'y', stackdir = "center", alpha = 0.3, binwidth = 0.2)
+# Hate the way this looks. will fix later.
 
 ```
 
