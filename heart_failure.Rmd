@@ -29,7 +29,13 @@ library(janitor)
 ```
 
 ```{r}
-heart <- read.csv("heart.csv")
+#Import the CSV and clean column names for easier coding
+heart_raw <- read.csv("heart.csv")
+
+heart <- heart_raw %>% 
+  clean_names() # converts column names to snake_case, lowercase, no spaces
+
+#Inspect structure after cleaning
 glimpse(heart)
 ```
 
@@ -44,7 +50,7 @@ view(heart)
 
 ```{r}
 names(heart)
-range(heart$Age)
+range(heart$age)
 ```
 
 
@@ -53,10 +59,10 @@ range(heart$Age)
 ```{r clean_comparisons}
 
 # Pulls out necessary data and changes the heart disease to a string to make it more decipherable 
-# The 0 and 1 values in heartdisease instead of yes and no was driving me crazy. I cleaned it up and stored it in a variable.
+# The 0 and 1 values in heart_disease instead of yes and no was driving me crazy. I cleaned it up and stored it in a variable.
 
 heart_clean <- heart %>%
-  mutate(HeartDisease = factor(HeartDisease,
+  mutate(heart_disease = factor(heart_disease,
                                levels = c(0, 1),
                                labels = c("No", "Yes")))
 
@@ -67,20 +73,20 @@ random_sample <- heart_clean %>%
 
 
 random_sample %>%
-  select(Age, Sex, HeartDisease, ExerciseAngina, ST_Slope, Oldpeak) %>%
+  select(age, sex, heart_disease, exercise_angina, st_slope , oldpeak) %>%
 
-  arrange(Age) %>%
+  arrange(age) %>%
   head(20)
 
 # gives an average for necessary data for a better comparison
 
 
 heart_clean %>%
-  select(Age, Sex, HeartDisease, ExerciseAngina, ST_Slope, Oldpeak) %>%
+  select(age, sex, heart_disease, exercise_angina, st_slope , oldpeak) %>%
   
-  group_by(HeartDisease) %>%
-  summarise("Average Age" = mean(Age),
-            "Old Peak" = mean(Oldpeak))
+  group_by(heart_disease) %>%
+  summarise("Average age" = mean(age),
+            "Old Peak" = mean(oldpeak))
 
 
 ```
@@ -90,21 +96,21 @@ heart_clean %>%
 
 # What seems to be the highest correlation among these factors with heart disease?
 
-# ST slope, exercise level, & Oldpeak have the highest correlation. ST slope is the segment on an ECG that shows when the heart rate drops below the baseline while under physical stress, with the slope telling us the direction of that drop (depression). The oldpeak measures the drop in a numerical value. 
+# ST slope, exercise level, & oldpeak have the highest correlation. ST slope is the segment on an ECG that shows when the heart rate drops below the baseline while under physical stress, with the slope telling us the direction of that drop (depression). The oldpeak measures the drop in a numerical value. 
 library(ggthemes)
 
 # I just discovered ggthemes, gonna play with this a bit
 
-ggplot(heart_clean, aes(x = factor(HeartDisease), y = Oldpeak, fill = factor(HeartDisease))) +
+ggplot(heart_clean, aes(x = factor(heart_disease), y = oldpeak, fill = factor(heart_disease))) +
   geom_boxplot(alpha = 0.5) +
-  labs(title = "Oldpeak Distribution with Heart Disease",
+  labs(title = "oldpeak Distribution with Heart Disease",
        x = "Heart ") +
   theme_minimal()
 
 ```
 
 ```{r}
-ggplot(heart_clean, aes(x = HeartDisease, y = Oldpeak)) +
+ggplot(heart_clean, aes(x = heart_disease, y = oldpeak)) +
   geom_boxplot(alpha = 0.5) +
   geom_dotplot(binaxis = 'y', stackdir = "center", alpha = 0.3, binwidth = 0.2)
 # Hate the way this looks. will fix later.
