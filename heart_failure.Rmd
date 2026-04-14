@@ -20,9 +20,12 @@ dyplr
 janitor #cleans columns names and simple tabulations
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
+# tidyverse: data wrangling (dplyr), plotting (ggplot2) and general data manipulation
 library(tidyverse)
-library(ggplot2)
-library(dplyr)
+library(ggplot2) #remove this
+library(dplyr) #remove this
+# janitor: cleans columns names and simple tabulations
+library(janitor)
 ```
 
 ```{r}
