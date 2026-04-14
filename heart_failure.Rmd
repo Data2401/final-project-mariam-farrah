@@ -8,6 +8,16 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+Intro: 
+Heart disease is one of the leading causes of death worldwide, and the number 1 cause of death in the United States, about ... Americans from all ... (should i go into stats?) (citation) Understanding the its risk factors in pivotal for medical professionals and the general public ...
+
+Data Exploration: (what question we're answering and exploring, background on the data: where we got it from, the link, the author, the reasoning for the data being made available, important variables and their meanings)
+
+Packages: 
+tidyverse: data wrangling (dplyr), plotting (ggplot2) and general data manipulation 
+ggplot2
+dyplr
+janitor #cleans columns names and simple tabulations
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 library(tidyverse)
