@@ -7,6 +7,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+install.packages("knitr")
+install.packages("kableExtra")
+install.packages("skimr")
 ```
 Intro: 
 Heart disease is one of the leading causes of death worldwide, and the number 1 cause of death in the United States, about ... Americans from all ... (should i go into stats?) (citation) Understanding the its risk factors in pivotal for medical professionals and the general public ...
@@ -20,12 +24,22 @@ dyplr
 janitor #cleans columns names and simple tabulations
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
+
 # tidyverse: data wrangling (dplyr), plotting (ggplot2) and general data manipulation
 library(tidyverse)
 library(ggplot2) #remove this
 library(dplyr) #remove this
+
 # janitor: cleans columns names and simple tabulations
 library(janitor)
+
+# knitr : Create nice tables in the report
+library(knitr)
+
+# kableExtra: Enhancing table appearance (border, alignment, etc.)
+library(kableExtra)
+
+library(skimr)
 ```
 
 ```{r}
@@ -38,8 +52,17 @@ heart <- heart_raw %>%
 #Inspect structure after cleaning
 glimpse(heart)
 ```
+We first read in the CSV file and use `clean_names()` to standardize the column names. This makes it easier to reference variables in the rest of the analysis (for example, `chest_pain_type` instead of `ChestPainType`).
 
+```{r missing}
 
+# count missing values in each column
+
+missing_vals <- colSums(is.na(heart))
+missing_vals
+
+```
+In this step we check to see if any columns have missing values. If column counts are zero, then the data has no missing value, otherwise missing values will affect how we summarize and visualize our data set columns i.e filtering out missing values or replace them with NA.
 
 ```{r, include = FALSE}
 
@@ -91,6 +114,19 @@ heart_clean %>%
 
 ```
 
+Final clean dataset (condensed view)
+```{r}
+# show a small sample of cleaned data
+heart_clean %>% 
+  slice_head(n = 10) %>% 
+  kable(caption = "Sample of Cleaned Heart Dataset") %>% 
+  kable_styling(full_width = FALSE)
+
+# summary of variables of interest
+#skim(heart_clean)
+```
+
+
 ```{r boxplot_correlations}
 
 
@@ -118,6 +154,13 @@ ggplot(heart_clean, aes(x = heart_disease, y = oldpeak)) +
 ```
 
 
+```{r}
+ggplot(heart_clean, aes(x = heart_disease, y = oldpeak)) +
+  geom_boxplot(alpha = 0.5) +
+  geom_dotplot(binaxis = 'y', stackdir = "center", alpha = 0.3, binwidth = 0.2)
+# Hate the way this looks. will fix later.
+
+```
 
 
 
