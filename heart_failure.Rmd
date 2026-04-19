@@ -49,28 +49,26 @@ heart_raw <- read.csv("heart.csv")
 # Inspect raw structure
 glimpse(heart)
 ```
+
 We first read in the CSV file and use glimpse() to inspect the raw imported data
 
-
 ```{r clean_up}
+# ------------------
+# Data Cleaning
+# ------------------
 
-# Data Clean up
-
+# Clean column names
 heart <- heart_raw %>% 
   clean_names() # converts column names to snake_case, lowercase, no spaces
 
-# Map every clinical abbreviations to full text
-
-# Sex (sex)
+# Recode Sex (F/M -> Female/Male)
 heart <- heart %>% 
   mutate(sex = fct_recode(factor(sex),
                           "Female" = "F",
                           "Male" = "M"
                           ))
-# Check to ensure accuracy in mutation
-levels(heart$sex)
 
-# Chest Pain Type (chest_pain_type)
+# Recode chest pain type abbreviations
 heart <- heart %>% 
   mutate(chest_pain_type = fct_recode(factor(chest_pain_type),
                                       "Atypical Angina" = "ATA", 
@@ -78,36 +76,38 @@ heart <- heart %>%
                                       "Non-Anginal Pain" = "NAP", 
                                       "Typical Angina" = "TA"
                                       ))
-# Check
-levels(heart$chest_pain_type)
 
-# Fasting Blood Sugar (fasting_bs), Exercise Angina (exercise_angina) Heart Disease (heart_disease)
-# loop across to change names in multiple columns with one chunk
+
+# Recode resting ECG type abbreviations
+heart <- heart %>% 
+  mutate(resting_ecg = fct_recode(factor(resting_ecg),
+                                  "ST-T Abnormality" = "ST",
+                                  "LV Hypertrophy" = "LVH",
+                                  "Normal" = "Normal"
+                                  ))
+
+# Recode binary variables (0/1 or N/Y -> No/Yes)
 heart <- heart %>% 
   mutate(across(c(fasting_bs, exercise_angina, heart_disease), ~ {
     # Turn the current column (.x) into a factor
     fct_col <- factor(.x)
     
-    # Re-code that factor
+    # Recode that factor
     fct_recode(fct_col,
                "Yes" = "1", "Yes" = "Y",
                "No" = "0", "No" = "N"
                )
   }))
-  
-# Check
-levels(heart$fasting_bs)
 
-levels(heart$exercise_angina)
-
-levels(heart$heart_disease)
-
-#Inspect structure after cleaning
+# Check structure after cleaning
 glimpse(heart)
 ```
- We use `clean_names()` to standardize the column names. This makes it easier to reference variables in the rest of the analysis (for example, `chest_pain_type` instead of `ChestPainType`).  
+ 
+ We use `clean_names()` to standardize the column names. This makes it easier to reference variables in the rest of the analysis (for example, `chest_pain_type` instead of `ChestPainType`). 
+Next we mutate our dataset, recoding clinical abbreviations with their full descriptive names. Now values such as `M` and `F` are now `Male` and `Female`, along with several others.
+We use `fct_recode()` as opposed to simply converting variables to factors, because `fct_recode()` allows us to explicitly map each original value to a new, more readable label, improving clarity, reducing the chance of errors, and making the dataset easier to interpret in later summaries, analysis, and visualizations.
 
-```{r missing}
+```{r missing_values}
 
 # count missing values in each column
 
@@ -115,9 +115,11 @@ missing_vals <- colSums(is.na(heart))
 missing_vals
 
 ```
-In this step we check to see if any columns have missing values. If column counts are zero, then the data has no missing value, otherwise missing values will affect how we summarize and visualize our data set columns i.e filtering out missing values or replace them with NA.
+In this step we check to see if any columns have missing values. If column counts > 0 indicate the number of missing values in the columns and a 0 m
+are zero, then the data has no missing value, otherwise missing values indicate incomplete or missing data, affecting 
+will affect how we summarize and visualize our data set columns i.e filtering out missing values or replacing them with NA.
 
-```{r duplicates}
+```{r duplicate_check}
 
 # checking for duplicates
 
@@ -129,7 +131,7 @@ duplicates_table
 
 
 ```
-Here we check for duplicates in the rows of the data set using duplicated(). Duplicates can occur when data is collected from multiple sources or an error in entry, if duplicates were found I would remove them to ensure the integrity of the data. (do I talka about what I would do otehrwise? look at sample reports). Since no suplicates were found, no further action is required. 
+Here we check for duplicates in the rows of the data set using duplicated(). Duplicates can occur when data is collected from multiple sources or an error in entry, if duplicates were found I would remove them to ensure the integrity of the data. Since no duplicates were found, no further action is required. 
 
 ```{r, include = FALSE}
 
@@ -180,6 +182,43 @@ heart_clean %>%
 
 
 ```
+
+```{r variable_dictionary}
+#-----------------------
+# Variable Dictionary
+#-----------------------
+
+variable_dictionary <- tibble(
+  variable = c(
+    "age", "sex", "chest_pain_type", "resting_bp", "cholesterol", "fasting_bs",
+    "resting_ecg", "max_hr", "exercise_angina", "oldpeak", "st_slope", "heart_disease"),
+  description = c(
+    "Age of patients in years",
+    "Biological sex (Male/Female)",
+    "Type of chest pain experienced",
+    "Resting blood pressure (mm Hg)",
+    "Serum cholestrol level (mg/dL)",
+    "Fasting blood sugar > 120 mg/dl (Yes/No)",
+    "Resting electrocardiogram results",
+    "Maximum heart rate achieved during excercise",
+    "Excercise-induced angina (Yes/No)",
+    "ST depression induced by excercise relative to rest",
+    "Slope of the peak ST segment",
+    "Presence of heart disease (Yes/No)"
+    )
+  )
+
+variable_dictionary %>% 
+  kable(caption = "Variable Dictionary for Heart Dataset") %>% 
+  kable_styling(bootstrap_options = c("striped", "bordered"), full_width = FALSE)
+
+
+```
+
+** Clinical Background for Key Heart Variables
+Several variables in this dataset come from electrocardiograms (ECGs) and excercise stress tests. 
+
+
 
 Final clean dataset (condensed view)
 ```{r}
