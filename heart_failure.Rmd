@@ -221,7 +221,7 @@ ST in the dataset refers to the ST segment.
 Final clean dataset (condensed view)
 ```{r}
 #-------------------------
-# Sample of cleaned data
+# Sample of Cleaned Data
 #-------------------------
 
 heart %>% 
@@ -232,7 +232,9 @@ heart %>%
 ```
 
 ```{r outliers}
+#---------------------
 # Check for Outliers
+#---------------------
 heart %>% 
   select(age, resting_bp, cholesterol, max_hr, oldpeak) %>% 
   pivot_longer(cols = everything(), names_to = "variable", values_to = "value") %>% 
@@ -247,7 +249,22 @@ heart %>%
 
 
 ```
-To identify potential outliers I created boxplots for the main numeric variables in the dataset. Variables including, age, cholesterol, max heart rate, oldpeak, resting blood pressure
+To identify potential outliers I created boxplots for the main numeric variables in the dataset. Variables including, age, cholesterol, max heart rate, oldpeak, resting blood pressure... In thos data we will not remove the outliers because htye reporent real cases weher the ...                                                                              
+**EDA
+```{r sex_count}
+#-----------------------------------
+# Count Bar Chart (Male vs Female)
+#-----------------------------------
+heart %>% 
+  ggplot(aes(x = sex)) +
+  geom_bar(fill = "cadetblue") +
+  labs(title = "Count of Male vs Female Patients",
+       x = "Sex",
+       y = "Count") +
+  theme_minimal()
+```
+The bar chart shows the count of male vs female patients. This bar chart shows that there are significantly more males than females patients in this dataset. (...)
+
 
 ```{r boxplot_correlations}
 
