@@ -199,10 +199,10 @@ variable_dictionary <- tibble(
     "Resting blood pressure (mm Hg)",
     "Serum cholestrol level (mg/dL)",
     "Fasting blood sugar > 120 mg/dl (Yes/No)",
-    "Resting electrocardiogram results",
-    "Maximum heart rate achieved during excercise",
+    "Resting electrocardiogram results (Normal, ST-T Abnormality, LV Hypertrophy)",
+    "Maximum heart rate achieved during exercise",
     "Excercise-induced angina (Yes/No)",
-    "ST depression induced by excercise relative to rest",
+    "ST depression induced by exercise relative to rest",
     "Slope of the peak ST segment",
     "Presence of heart disease (Yes/No)"
     )
@@ -216,17 +216,27 @@ variable_dictionary %>%
 ```
 
 ** Clinical Background for Key Heart Variables
-Several variables in this dataset come from electrocardiograms (ECGs) and excercise stress tests. 
 
+Several variables in this dataset come from electrocardiograms (ECGs) and exercise stress tests. These exercises help determine how the heart responds to physical activity and whether blood flow to the heart is reduced. 
 
+ST in the dataset refers to the ST segment.
+- ST Segment/ ST-T Wave: The ST segment is part of the ECG waveform. Abnormal changes in this segment can indicate reduced blood flow to the heart (ischemia) or other electrical disturbances. 
+
+- LV Hypertrophy (Left Ventricular Hypertrophy): occurs ventricle- the main pumping chamber of the heart- becomes thickened. Often resulting from long standing high blood pressure or other conditions that forces the heart to work harder. LV Hypertrophy is important because it increases the risk heart failure, and other cardiac events. 
+
+- Oldpeak: This measure how much the ST segment drops during the exercise compared to rest. Higher values often indicate that the heart is not receiving enough oxygen.
+
+- ST Slope: This describes the direction of the ST segment during peak exercise (upsloping, flat, downsloping). A flat or downsloping line is commonly associated with heart disease
+
+- Exercise Angina: Indicates whether the patient experienced chest pain during exercise, which can be a sign of reduced oxygen supply to the brain. 
 
 Final clean dataset (condensed view)
 ```{r}
 # show a small sample of cleaned data
-heart_clean %>% 
+heart %>% 
   slice_head(n = 10) %>% 
   kable(caption = "Sample of Cleaned Heart Dataset") %>% 
-  kable_styling(full_width = FALSE)
+  kable_styling(bootstrap_options = c("striped", "bordered"), full_width = FALSE)
 
 # summary of variables of interest
 #skim(heart_clean)
