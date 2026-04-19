@@ -40,19 +40,75 @@ library(knitr)
 library(kableExtra)
 
 library(skimr)
+
+## to mutate data all at once...
+library(forcats)
 ```
 
-```{r}
-#Import the CSV and clean column names for easier coding
+```{r import}
+# Import the CSV and clean column names for easier coding
 heart_raw <- read.csv("heart.csv")
+
+# Inspect raw structure
+glimpse(heart)
+```
+We first read in the CSV file and use glimpse() to inspect the raw imported data
+
+
+```{r clean_up}
+
+# Data Clean up
 
 heart <- heart_raw %>% 
   clean_names() # converts column names to snake_case, lowercase, no spaces
 
+# Map every clinical abbreviations to full text
+
+# Sex (sex)
+heart <- heart %>% 
+  mutate(sex = fct_recode(factor(sex),
+                          "Female" = "F",
+                          "Male" = "M"
+                          ))
+#Check to ensure accuracy in mutation
+levels(heart$sex)
+
+# Chest Pain Type (chest_pain_type)
+heart <- heart %>% 
+  mutate(chest_pain_type = fct_recode(factor(chest_pain_type),
+                                      "Atypical Angina" = "ATA", 
+                                      "Asymptomatic" = "ASY",
+                                      "Non-Anginal Pain" = "NAP", 
+                                      "Typical Angina" = "TA"
+                                      ))
+# Check
+levels(heart$chest_pain_type)
+
+# Fasting Blood Sugar (fasting_bs), Exercise Angina (exercise_angina) Heart Disease (heart_disease)
+# loop across to change names in multiple columns with one chunk
+heart <- heart %>% 
+  mutate(across(c(fasting_bs, exercise_angina, heart_disease), ~ {
+    # Turn the current column (.x) into a factor
+    fct_col <- factor(.x)
+    
+    # Re-code that factor
+    fct_recode(fct_col,
+               "Yes" = "1", "Yes" = "Y",
+               "No" = "0", "No" = "N"
+               )
+  }))
+  
+# Check
+levels(heart$fasting_bs)
+
+levels(heart$exercise_angina)
+
+levels(heart$heart_disease)
+
 #Inspect structure after cleaning
 glimpse(heart)
 ```
-We first read in the CSV file and use `clean_names()` to standardize the column names. This makes it easier to reference variables in the rest of the analysis (for example, `chest_pain_type` instead of `ChestPainType`).
+ We use `clean_names()` to standardize the column names. This makes it easier to reference variables in the rest of the analysis (for example, `chest_pain_type` instead of `ChestPainType`).  
 
 ```{r missing}
 
@@ -63,6 +119,20 @@ missing_vals
 
 ```
 In this step we check to see if any columns have missing values. If column counts are zero, then the data has no missing value, otherwise missing values will affect how we summarize and visualize our data set columns i.e filtering out missing values or replace them with NA.
+
+```{r duplicates}
+
+# checking for duplicates
+
+duplicates <- heart %>% duplicated()
+
+duplicates_table <- duplicates %>% table()
+
+duplicates_table
+
+
+```
+Here we check for duplicates in the rows of the data set using duplicated(). Duplicates can occur when data is collected from multiple sources or an error in entry, if duplicates were found I would remove them to ensure the integrity of the data. (do I talka about what I would do otehrwise? look at sample reports). Since no suplicates were found, no further action is required. 
 
 ```{r, include = FALSE}
 
