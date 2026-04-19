@@ -214,9 +214,9 @@ ST in the dataset refers to the ST segment.
 
 - Oldpeak: This measure how much the ST segment drops during the exercise compared to rest. Higher values often indicate that the heart is not receiving enough oxygen.
 
-- ST Slope: This describes the direction of the ST segment during peak exercise (upsloping, flat, downsloping). A flat or downsloping line is commonly associated with heart disease
+- ST Slope: This describes the direction of the ST segment during peak exercise (upsloping, flat, downsloping). A flat or downsloping line is commonly associated with heart disease.
 
-- Exercise Angina: Indicates whether the patient experienced chest pain during exercise, which can be a sign of reduced oxygen supply to the brain. 
+- Exercise Angina: Indicates whether the patient experienced chest pain during exercise, which can be a sign of reduced oxygen supply to the heart. 
 
 Final clean dataset (condensed view)
 ```{r}
@@ -257,14 +257,30 @@ To identify potential outliers I created boxplots for the main numeric variables
 #-----------------------------------
 heart %>% 
   ggplot(aes(x = sex)) +
-  geom_bar(fill = "cadetblue") +
+  geom_bar(fill = "darkgray") +
   labs(title = "Count of Male vs Female Patients",
        x = "Sex",
        y = "Count") +
   theme_minimal()
 ```
-The bar chart shows the count of male vs female patients. This bar chart shows that there are significantly more males than females patients in this dataset. (...)
+The bar chart shows the count of male vs female patients. This bar chart shows that there are significantly more males than females patients in this dataset. Which is important... might show bias, oversmapling, ...
 
+```{r heart_disease_by_sex}
+#-----------------------------------
+# Heart Disease Proportion (Male vs Female)
+#-----------------------------------
+heart %>% 
+  ggplot(aes(x = sex, fill = heart_disease)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("No" = "#619CFF", "Yes" = "#d62728")) +
+  labs(title = "Proportion of Heart Disease by Sex",
+       x = "Sex",
+       y = "Percentage") +
+  theme_minimal()
+```
+This proportion bar chart shows the prevalence of heart disease in males vs females. I used a proportion chart due to the raw count imbalance- a proportion bar chart is best to showcase a direct comparison, normalizing each group to a 100%, regardless of actual count. 
+The proportion chart shows that about 63%  of males have heart disease in comparison to only 26% of females that do. This correlates with real world known heart disease patterns.
 
 ```{r boxplot_correlations}
 
