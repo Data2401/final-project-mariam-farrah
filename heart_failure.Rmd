@@ -7,10 +7,6 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
-install.packages("knitr")
-install.packages("kableExtra")
-install.packages("skimr")
 ```
 Intro: 
 Heart disease is one of the leading causes of death worldwide, and the number 1 cause of death in the United States, about ... Americans from all ... (should i go into stats?) (citation) Understanding the its risk factors in pivotal for medical professionals and the general public ...
@@ -37,17 +33,14 @@ library(knitr)
 # kableExtra: Enhancing table appearance (border, alignment, etc.)
 library(kableExtra)
 
-library(skimr)
-
-
 ```
 
 ```{r import}
-# Import the CSV and clean column names for easier coding
+# Import the CSV
 heart_raw <- read.csv("heart.csv")
 
 # Inspect raw structure
-glimpse(heart)
+glimpse(heart_raw)
 ```
 
 We first read in the CSV file and use glimpse() to inspect the raw imported data
@@ -103,35 +96,30 @@ heart <- heart %>%
 glimpse(heart)
 ```
  
- We use `clean_names()` to standardize the column names. This makes it easier to reference variables in the rest of the analysis (for example, `chest_pain_type` instead of `ChestPainType`). 
+We use `clean_names()` to standardize the column names. This makes it easier to reference variables in the rest of the analysis (for example, `chest_pain_type` instead of `ChestPainType`). 
 Next we mutate our dataset, recoding clinical abbreviations with their full descriptive names. Now values such as `M` and `F` are now `Male` and `Female`, along with several others.
 We use `fct_recode()` as opposed to simply converting variables to factors, because `fct_recode()` allows us to explicitly map each original value to a new, more readable label, improving clarity, reducing the chance of errors, and making the dataset easier to interpret in later summaries, analysis, and visualizations.
 
 ```{r missing_values}
 
 # count missing values in each column
-
 missing_vals <- colSums(is.na(heart))
 missing_vals
 
 ```
-In this step we check to see if any columns have missing values. If column counts > 0 indicate the number of missing values in the columns and a 0 m
-are zero, then the data has no missing value, otherwise missing values indicate incomplete or missing data, affecting 
-will affect how we summarize and visualize our data set columns i.e filtering out missing values or replacing them with NA.
+After cleaning the data we check for missing values. Missing values indicate incomplete data which can skew summary statistics if not handled correctly. The results show this dataset has no missing values, therefore the data is complete requiring no further action in this regard.
 
 ```{r duplicate_check}
 
-# checking for duplicates
-
+# Check for duplicates
 duplicates <- heart %>% duplicated()
 
 duplicates_table <- duplicates %>% table()
 
 duplicates_table
 
-
 ```
-Here we check for duplicates in the rows of the data set using duplicated(). Duplicates can occur when data is collected from multiple sources or an error in entry, if duplicates were found I would remove them to ensure the integrity of the data. Since no duplicates were found, no further action is required. 
+Here we check for duplicates in the rows of the data set using duplicated(). Duplicates can occur when data is collected from multiple sources or from errors in entry, if duplicates were found I would remove them to ensure the integrity of the data. Since no duplicates were found, no further action is required. 
 
 ```{r, include = FALSE}
 
@@ -217,7 +205,7 @@ variable_dictionary %>%
 
 ** Clinical Background for Key Heart Variables
 
-Several variables in this dataset come from electrocardiograms (ECGs) and exercise stress tests. These exercises help determine how the heart responds to physical activity and whether blood flow to the heart is reduced. 
+Several variables in this dataset come from electrocardiograms (ECG) and exercise stress tests. These exercises help determine how the heart responds to physical activity and whether blood flow to the heart is reduced. 
 
 ST in the dataset refers to the ST segment.
 - ST Segment/ ST-T Wave: The ST segment is part of the ECG waveform. Abnormal changes in this segment can indicate reduced blood flow to the heart (ischemia) or other electrical disturbances. 
@@ -232,16 +220,34 @@ ST in the dataset refers to the ST segment.
 
 Final clean dataset (condensed view)
 ```{r}
-# show a small sample of cleaned data
+#-------------------------
+# Sample of cleaned data
+#-------------------------
+
 heart %>% 
   slice_head(n = 10) %>% 
   kable(caption = "Sample of Cleaned Heart Dataset") %>% 
   kable_styling(bootstrap_options = c("striped", "bordered"), full_width = FALSE)
 
-# summary of variables of interest
-#skim(heart_clean)
 ```
 
+```{r outliers}
+# Check for Outliers
+heart %>% 
+  select(age, resting_bp, cholesterol, max_hr, oldpeak) %>% 
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value") %>% 
+  ggplot(aes(x = variable, y = value)) +
+  geom_boxplot(fill = "cadetblue", alpha = 0.7) +
+  labs(
+    title = "Boxplots for Detecting Outliers in Key Numeric Variables",
+    x = "Variable",
+    y = "Value"
+  ) +
+  theme_minimal()
+
+
+```
+To identify potential outliers I created boxplots for the main numeric variables in the dataset. Variables including, age, cholesterol, max heart rate, oldpeak, resting blood pressure
 
 ```{r boxplot_correlations}
 
@@ -253,7 +259,7 @@ library(ggthemes)
 
 # I just discovered ggthemes, gonna play with this a bit
 
-ggplot(heart_clean, aes(x = factor(heart_disease), y = oldpeak, fill = factor(heart_disease))) +
+ggplot(heart, aes(x = factor(heart_disease), y = oldpeak, fill = factor(heart_disease))) +
   geom_boxplot(alpha = 0.5) +
   labs(title = "oldpeak Distribution with Heart Disease",
        x = "Heart ") +
@@ -262,7 +268,7 @@ ggplot(heart_clean, aes(x = factor(heart_disease), y = oldpeak, fill = factor(he
 ```
 
 ```{r}
-ggplot(heart_clean, aes(x = heart_disease, y = oldpeak)) +
+ggplot(heart, aes(x = heart_disease, y = oldpeak)) +
   geom_boxplot(alpha = 0.5) +
   geom_dotplot(binaxis = 'y', stackdir = "center", alpha = 0.3, binwidth = 0.2)
 # Hate the way this looks. will fix later.
@@ -270,13 +276,7 @@ ggplot(heart_clean, aes(x = heart_disease, y = oldpeak)) +
 ```
 
 
-```{r}
-ggplot(heart_clean, aes(x = heart_disease, y = oldpeak)) +
-  geom_boxplot(alpha = 0.5) +
-  geom_dotplot(binaxis = 'y', stackdir = "center", alpha = 0.3, binwidth = 0.2)
-# Hate the way this looks. will fix later.
 
-```
 
 
 
