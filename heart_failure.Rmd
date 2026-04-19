@@ -25,10 +25,8 @@ janitor #cleans columns names and simple tabulations
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 
-# tidyverse: data wrangling (dplyr), plotting (ggplot2) and general data manipulation
+# tidyverse: data wrangling (dplyr), plotting (ggplot2), and general data manipulation (forcats)
 library(tidyverse)
-library(ggplot2) #remove this
-library(dplyr) #remove this
 
 # janitor: cleans columns names and simple tabulations
 library(janitor)
@@ -41,8 +39,7 @@ library(kableExtra)
 
 library(skimr)
 
-## to mutate data all at once...
-library(forcats)
+
 ```
 
 ```{r import}
@@ -70,7 +67,7 @@ heart <- heart %>%
                           "Female" = "F",
                           "Male" = "M"
                           ))
-#Check to ensure accuracy in mutation
+# Check to ensure accuracy in mutation
 levels(heart$sex)
 
 # Chest Pain Type (chest_pain_type)
