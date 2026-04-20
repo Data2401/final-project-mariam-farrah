@@ -9,9 +9,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 Intro: 
+Women are underdiagnosed, often present a typical symptoms, medical datasets often underrepsent women...
+Does dataset represent those patterns?
 Heart disease is one of the leading causes of death worldwide, and the number 1 cause of death in the United States, about ... Americans from all ... (should i go into stats?) (citation) Understanding the its risk factors in pivotal for medical professionals and the general public ...
 
 Data Exploration: (what question we're answering and exploring, background on the data: where we got it from, the link, the author, the reasoning for the data being made available, important variables and their meanings)
+I want to explore the difference in symptoms between males and females who have heart disease, because historically women have been underrepresented in medicine, their symptoms differ, and this contributes to misdiagnosis.
 
 Packages: 
 tidyverse: data wrangling (dplyr), plotting (ggplot2) and general data manipulation 
@@ -266,9 +269,9 @@ heart %>%
 The bar chart shows the count of male vs female patients. This bar chart shows that there are significantly more males than females patients in this dataset. Which is important... might show bias, oversmapling, ...
 
 ```{r heart_disease_by_sex}
-#-----------------------------------
+#--------------------------------------------
 # Heart Disease Proportion (Male vs Female)
-#-----------------------------------
+#--------------------------------------------
 heart %>% 
   ggplot(aes(x = sex, fill = heart_disease)) +
   geom_bar(position = "fill") +
@@ -281,6 +284,32 @@ heart %>%
 ```
 This proportion bar chart shows the prevalence of heart disease in males vs females. I used a proportion chart due to the raw count imbalance- a proportion bar chart is best to showcase a direct comparison, normalizing each group to a 100%, regardless of actual count. 
 The proportion chart shows that about 63%  of males have heart disease in comparison to only 26% of females that do. This correlates with real world known heart disease patterns.
+
+
+** What symptoms are typically associated with heart disease? What symptoms distinguish heart disease from no heart disease?
+```{r heart_disease_by_sex}
+#--------------------------------------------
+# Heart Disease Proportion (Male vs Female)
+#--------------------------------------------
+heart %>% 
+  ggplot(aes(x = sex, fill = heart_disease)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("No" = "#619CFF", "Yes" = "#d62728")) +
+  labs(title = "Proportion of Heart Disease by Sex",
+       x = "Sex",
+       y = "Percentage") +
+  theme_minimal()
+```
+
+
+
+
+
+
+
+
+** Do these symptoms differ between men and women?
 
 ```{r boxplot_correlations}
 
