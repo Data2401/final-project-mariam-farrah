@@ -419,6 +419,68 @@ heart_disease_only <- heart %>% filter(heart_disease == "Yes")
 
 We created a subset of the full heart dataset filtered to only keep individuals with heart disease. 
 
+```{r chest_pain_type_distribution_by_sex}
+#--------------------------------------------
+# Chest Pain Type Distribution by Sex (Heart Disease Only)
+#--------------------------------------------
+heart_disease_only %>% 
+  ggplot(aes(x = sex, fill = chest_pain_type)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Chest Pain Type by Sex (Heart Disease Only)",
+       x = "Sex",
+       y = "Percentage",
+       fill = "Chest Pain Type") +
+  theme_minimal()
+```
+This chart shows whether women with heart disease present more with atypical angina or asymptomatic chest pains. Both of which are associated with heart disease. This graph presents women and men with heart disease both experience Asymptomatic heart pain almost equally however women experience atypical angina significantly more than men. Non-anginal pain and typical angina is more often in males than in females. 
+
+```{r oldpeak_distribution_by_sex}
+#--------------------------------------------
+# Oldpeak Distribution by Sex (Heart Disease Only)
+#--------------------------------------------
+heart_disease_only %>% 
+  ggplot(aes(x = sex, y = oldpeak, fill = sex)) +
+  geom_boxplot() +
+  
+  labs(title = "Oldpeak by Sex",
+       x = "Sex",
+       y = "Oldpeak") +
+  theme_minimal()
+```
+The boxplot shows similar oldpeak symtoms between both sex.
+
+
+```{r max_hr_by_sex}
+#--------------------------------------------
+# Max heart rate by Sex (Heart Disease Only)
+#--------------------------------------------
+heart_disease_only %>% 
+  ggplot(aes(x = sex, y = max_hr, fill = sex)) +
+  geom_boxplot() +
+  #scale_fill_manual(values = c())
+  labs(title = "Max Heart Rate by Sex (Disease Only)",
+       x = "Sex",
+       y = "Max Heart Rate") +
+  theme_minimal()
+```
+The plot shows men and women differ in exercise response when disease is present with women ... a higher heart than men in general...
+
+```{r ST_slope_by_sex}
+#--------------------------------------------
+# ST Slope by Sex (Heart Disease Only)
+#--------------------------------------------
+heart_disease_only %>% 
+  ggplot(aes(x = sex, fill = st_slope)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "ST Slope by Sex (Heart Disease Only)",
+       x = "Sex", y = "Percentage", fill = "ST Slope") +
+  theme_minimal()
+```
+Both genders fairly similar.
+
+
 
 ```{r boxplot_correlations}
 
