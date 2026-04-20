@@ -421,19 +421,35 @@ heart_disease_only %>%
 The boxplot shows similar oldpeak symtoms between both sex.
 
 
-```{r max_hr}
+```{r max_hr_by_sex}
 #--------------------------------------------
 # Max heart rate by Sex (Heart Disease Only)
 #--------------------------------------------
-heart %>% 
-  ggplot(aes(x = sex, y = max_hr, fill = heart_disease)) +
+heart_disease_only %>% 
+  ggplot(aes(x = sex, y = max_hr, fill = sex)) +
   geom_boxplot() +
   #scale_fill_manual(values = c())
-  labs(title = "Max Heart Rate by Heart Disease Status",
-       x = "Heart Disease",
+  labs(title = "Max Heart Rate by Sex (Disease Only)",
+       x = "Sex",
        y = "Max Heart Rate") +
   theme_minimal()
 ```
+The plot shows men and women differ in exercise response when disease is present with women ... a higher heart than men in general...
+
+```{r ST_slope_by_sex}
+#--------------------------------------------
+# ST Slope by Sex (Heart Disease Only)
+#--------------------------------------------
+heart_disease_only %>% 
+  ggplot(aes(x = sex, fill = st_slope)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "ST Slope by Sex (Heart Disease Only)",
+       x = "Sex", y = "Percentage", fill = "ST Slope") +
+  theme_minimal()
+```
+Both genders fairly similar.
+
 
 
 ```{r boxplot_correlations}
