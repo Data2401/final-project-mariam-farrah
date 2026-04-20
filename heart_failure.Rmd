@@ -379,6 +379,16 @@ heart %>%
 
 ** Do these symptoms differ between men and women?
 
+```{r }
+#--------------------------------------------
+# New Dataset with Disease Only
+#--------------------------------------------
+heart_disease_only <- heart %>% filter(heart_disease == "Yes")
+  
+```
+
+We created a subset of the full heart dataset filtered to only keep individuals with heart disease. 
+
 
 ```{r boxplot_correlations}
 
