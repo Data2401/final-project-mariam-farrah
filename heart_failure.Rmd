@@ -405,6 +405,20 @@ heart_disease_only %>%
 ```
 This chart shows whether women with heart disease present more with atypical angina or asymptomatic chest pains. Both of which are associated with heart disease. This graph presents women and men with heart disease both experience Asymptomatic heart pain almost equally however women experience atypical angina significantly more than men. Non-anginal pain and typical angina is more often in males than in females. 
 
+```{r oldpeak_distribution_by_sex}
+#--------------------------------------------
+# Oldpeak Distribution by Sex (Heart Disease Only)
+#--------------------------------------------
+heart %>% 
+  ggplot(aes(x = sex, y = oldpeak, fill = sex)) +
+  geom_boxplot() +
+  
+  labs(title = "Oldpeak by Sex",
+       x = "Sex",
+       y = "Oldpeak") +
+  theme_minimal()
+```
+The boxplot shows a clear and significant difference between male and female oldpeak (explain the significance of oldpeak in heart disease correlation), concluding that women present clear difference in ischema severity and diagnostic patterns...
 
 
 ```{r boxplot_correlations}
