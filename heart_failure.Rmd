@@ -330,8 +330,9 @@ heart %>%
        y = "Oldpeak") +
   theme_minimal()
 ```
-#need to switch it out to a more informative graph (raincloud plot, bee plot) (library load), and make it more decsriptive and easier to read and understand.
-Individuals with Heart Disease have a more ... box plot, the  
+
+Individuals with heart disease tend to have lower maximum heart rates than those without the condition, shown by the distribution of the raincloud plot below. We can conclude that lower heart rates is a significant indicator of heart disease through the distance of the median points (red dots), but not the only indicator, as the graphs show an overlap.
+
 
 ```{r max_hr}
 #--------------------------------------------
@@ -339,30 +340,14 @@ Individuals with Heart Disease have a more ... box plot, the
 #--------------------------------------------
 heart %>% 
   ggplot(aes(x = heart_disease, y = max_hr, fill = heart_disease)) +
-  stat_halfeye(
-    adjust = 0.5,
-    width = 0.7,
-    justification = -0.2,
-    .width = 0,
-    alpha = 0.5
-  ) +
-  geom_beeswarm(
-    dodge.width = 0.2,
-    alpha = 0.3,
-    size = 1.3
-  ) +
-  stat_summary(
-    fun = median,
-    size = 4,
-    geom = "point",
-    color = "red"
-  ) +
+  stat_halfeye(adjust = 0.5, width = 0.7, justification = -0.2, .width = 0, alpha = 0.5) +
+  geom_beeswarm(dodge.width = 0.2, alpha = 0.3, size = 1.3) +
+  stat_summary(fun = median, size = 4, geom = "point", color = "red") +
   labs(
     title = "Heart Rate Distribution by Heart Disease Status",
     x = "Heart Disease Status",
     y = "Max Heart Rate"
-  ) +
-
+  ) + 
   theme_minimal()
   
   
