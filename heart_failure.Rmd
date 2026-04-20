@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 Intro: 
-Women are underdiagnosed, often present a typical symptoms, medical datasets often underrepsent women...
+Women are underdiagnosed, often present atypical symptoms, medical datasets often underrepsent women...
 Does dataset represent those patterns?
 Heart disease is one of the leading causes of death worldwide, and the number 1 cause of death in the United States, about ... Americans from all ... (should i go into stats?) (citation) Understanding the its risk factors in pivotal for medical professionals and the general public ...
 
@@ -35,6 +35,15 @@ library(knitr)
 
 # kableExtra: Enhancing table appearance (border, alignment, etc.)
 library(kableExtra)
+
+#ggthemes: better themes for data distribution
+library(ggthemes)
+
+#ggdist: For visualizing data distribution in a more efficient way
+library(ggdist)
+
+#ggbeeswarm: Enhances points for categorical data in raincloud plots
+library(ggbeeswarm)
 
 ```
 
@@ -252,7 +261,7 @@ heart %>%
 
 
 ```
-To identify potential outliers I created boxplots for the main numeric variables in the dataset. Variables including, age, cholesterol, max heart rate, oldpeak, resting blood pressure... In thos data we will not remove the outliers because htye reporent real cases weher the ...                                                                              
+To identify potential outliers I created boxplots for the main numeric variables in the dataset. Variables including, age, cholesterol, max heart rate, oldpeak, resting blood pressure... In this data we will not remove the outliers because htye reporent real cases weher the ...                                                                              
 **EDA
 ```{r sex_count}
 #-----------------------------------
@@ -330,12 +339,33 @@ Individuals with Heart Disease have a more ... box plot, the
 #--------------------------------------------
 heart %>% 
   ggplot(aes(x = heart_disease, y = max_hr, fill = heart_disease)) +
-  geom_boxplot() +
-  #scale_fill_manual(values = c())
-  labs(title = "Max Heart Rate by Heart Disease Status",
-       x = "Heart Disease",
-       y = "Max Heart Rate") +
+  stat_halfeye(
+    adjust = 0.5,
+    width = 0.7,
+    justification = -0.2,
+    .width = 0,
+    alpha = 0.5
+  ) +
+  geom_beeswarm(
+    dodge.width = 0.2,
+    alpha = 0.3,
+    size = 1.3
+  ) +
+  stat_summary(
+    fun = median,
+    size = 4,
+    geom = "point",
+    color = "red"
+  ) +
+  labs(
+    title = "Heart Rate Distribution by Heart Disease Status",
+    x = "Heart Disease Status",
+    y = "Max Heart Rate"
+  ) +
+
   theme_minimal()
+  
+  
 ```
 Patients with heart disease tend to have a lower heart rate during exercise in comparison to those with no heart disease in alignment with reduced cardiac functions
 
@@ -372,7 +402,7 @@ heart %>%
 # Resting ECG (Disease vs. No Disease)
 #--------------------------------------------
 heart %>% 
-  ggplot(aes(x = , fill = )) +
+  ggplot(aes(x = , fill = )) 
   
 ```
 
@@ -396,9 +426,9 @@ We created a subset of the full heart dataset filtered to only keep individuals 
 # What seems to be the highest correlation among these factors with heart disease?
 
 # ST slope, exercise level, & oldpeak have the highest correlation. ST slope is the segment on an ECG that shows when the heart rate drops below the baseline while under physical stress, with the slope telling us the direction of that drop (depression). The oldpeak measures the drop in a numerical value. 
-library(ggthemes)
 
-# I just discovered ggthemes, gonna play with this a bit
+
+
 
 ggplot(heart, aes(x = factor(heart_disease), y = oldpeak, fill = factor(heart_disease))) +
   geom_boxplot(alpha = 0.5) +
