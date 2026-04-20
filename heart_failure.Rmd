@@ -341,8 +341,32 @@ Patients with heart disease tend to have a lower heart rate during exercise in c
 
 #adress the outliers in the all the boxplots in the beginning analysis (where we looked at outlier)
 
+```{r ST_slope}
+#--------------------------------------------
+# ST Slope (Disease vs. No Disease)
+#--------------------------------------------
+heart %>% 
+  ggplot(aes(x = st_slope, fill = heart_disease)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "ST Slope by Heart Disease Status",
+       x = "ST Slope", y = "Percentage", fill = "Heart Disease") +
+  theme_minimal()
+```
+A down and flat ST slope is associated with patients with heart disease, this chart showcases patients with heart disease are similarly prone to a down or flat ST slope with minimal variance, reinforcing its diagnostic relevance. 
 
-
+```{r cholestrol}
+#--------------------------------------------
+# Cholestrol (Disease vs. No Disease)
+#--------------------------------------------
+heart %>% 
+  ggplot(aes(x = st_slope, fill = heart_disease)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "ST Slope by Heart Disease Status",
+       x = "ST Slope", y = "Percentage", fill = "Heart Disease") +
+  theme_minimal()
+```
 
 
 ** Do these symptoms differ between men and women?
