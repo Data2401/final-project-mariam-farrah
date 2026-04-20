@@ -389,6 +389,23 @@ heart_disease_only <- heart %>% filter(heart_disease == "Yes")
 
 We created a subset of the full heart dataset filtered to only keep individuals with heart disease. 
 
+```{r chest_pain_type_distribution_by_sex}
+#--------------------------------------------
+# Chest Pain Type Distribution by Sex (Heart Disease Only)
+#--------------------------------------------
+heart_disease_only %>% 
+  ggplot(aes(x = sex, fill = chest_pain_type)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Chest Pain Type by Sex (Heart Disease Only)",
+       x = "Sex",
+       y = "Percentage",
+       fill = "Chest Pain Type") +
+  theme_minimal()
+```
+This chart shows whether women with heart disease present more with atypical angina or asymptomatic chest pains. Both of which are associated with heart disease. This graph presents women and men with heart disease both experience Asymptomatic heart pain almost equally however women experience atypical angina significantly more than men. Non-anginal pain and typical angina is more often in males than in females. 
+
+
 
 ```{r boxplot_correlations}
 
