@@ -438,13 +438,6 @@ ggplot(heart, aes(x = factor(heart_disease), y = oldpeak, fill = factor(heart_di
 
 ```
 
-```{r}
-ggplot(heart, aes(x = heart_disease, y = oldpeak)) +
-  geom_boxplot(alpha = 0.5) +
-  geom_dotplot(binaxis = 'y', stackdir = "center", alpha = 0.3, binwidth = 0.2)
-# Hate the way this looks. will fix later.
-
-```
 
 
 
