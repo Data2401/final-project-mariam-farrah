@@ -167,7 +167,7 @@ duplicates_table <- duplicates %>% table()
 duplicates_table
 
 ```
-Here we check for duplicates in the rows of the data set using duplicated(). Duplicates can occur when data is collected from multiple sources or from errors in entry, if duplicates were found I would remove them to ensure the integrity of the data. Since no duplicates were found, no further action is required. 
+Here we check for duplicates in the rows of the data set using duplicated(). Duplicates can occur when data is collected from multiple sources or from errors in entry, if duplicates were found, we would remove them to ensure the integrity of the data. Since no duplicates were found, no further action is required. 
 
 
 ## Clean Sampling and Dictionary
@@ -300,6 +300,7 @@ heart %>%
 ## Heart Disease Proportion by Sex
 
 This proportion bar chart shows the prevalence of heart disease in males vs females. We used a proportion chart due to the raw count imbalance. A proportion bar chart is best to showcase a direct comparison, normalizing each group to a 100%, regardless of actual count. 
+
 - The proportion chart shows that about 63%  of males have heart disease in comparison to only 26% of females that do. This correlates with real world known heart disease patterns.
 
 ```{r heart_disease_by_sex}
@@ -492,9 +493,9 @@ heart_disease_only %>%
 ```
 
 
-## Final Correlations
+## Final Correlations and Purpose
 
-- These findings suggest that gender may act as an interacting factor rather than a primary predictor. By separating the data
+- These findings suggest that gender may act as an interacting factor rather than a primary predictor. Analyzing heart disease data through gender is important because biological and physiological differences between male and female patients can influence how cardiovascular conditions present and progress. By separating the data by gender, this study allows for a more detailed understanding of whether heart disease patterns are consistent across groups or if meaningful differences exist. A gender-based analysis accounts for variation that may overly distort the relationship between heart failure and physiological measurements.
 
 
 
