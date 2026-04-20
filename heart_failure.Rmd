@@ -318,14 +318,28 @@ heart %>%
   
   labs(title = "Oldpeak by Heart Disease Status",
        x = "Heart Disease",
-       y = "Oldpeak",
-       fill = "Heart Disease") +
+       y = "Oldpeak") +
   theme_minimal()
 ```
 #need to switch it out to a more informative graph (raincloud plot, bee plot) (library load), and make it more decsriptive and easier to read and understand.
+Individuals with Heart Disease have a more ... box plot, the  
 
+```{r max_hr}
+#--------------------------------------------
+# Max heart rate (Disease vs. No Disease)
+#--------------------------------------------
+heart %>% 
+  ggplot(aes(x = heart_disease, y = max_hr, fill = heart_disease)) +
+  geom_boxplot() +
+  #scale_fill_manual(values = c())
+  labs(title = "Max Heart Rate by Heart Disease Status",
+       x = "Heart Disease",
+       y = "Max Heart Rate") +
+  theme_minimal()
+```
+Patients with heart disease tend to have a lower heart rate during exercise in comparison to those with no heart disease in alignment with reduced cardiac functions
 
-
+#adress the outliers in the all the boxplots in the beginning analysis (where we looked at outlier)
 
 
 
