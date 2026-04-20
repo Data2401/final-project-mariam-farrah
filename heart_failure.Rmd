@@ -302,7 +302,7 @@ heart %>%
        fill = "Heart Disease") +
   theme_minimal()
 ```
-We can conclude from this chart that asymptomatic chest pain type is most prevalent among individuals with heart disease, followed by typical angina, non-anginal pain, and atypical angina
+We can conclude from this chart that asymptomatic chest pain type is most prevalent among individuals with heart disease, followed by typical angina, non-anginal pain, and atypical angina... this establishes chest pain type as a meaningful symptom to explore by gender.
 #explain these chest pain types, in the variable dictionary sections and add it to the dict, 
 # arrange it in descending order
 # change color (all same?)
@@ -313,15 +313,17 @@ We can conclude from this chart that asymptomatic chest pain type is most preval
 # Oldpeak Distribution (Disease vs. No Disease)
 #--------------------------------------------
 heart %>% 
-  ggplot(aes(x = oldpeak, fill = heart_disease)) +
-  geom_bar(position = "fill") +
-  scale_y_continuous(labels = scales::percent) +
+  ggplot(aes(x = heart_disease, y = oldpeak, fill = heart_disease)) +
+  geom_boxplot() +
+  
   labs(title = "Oldpeak by Heart Disease Status",
-       x = "Chest Pain Type",
-       y = "Percentage",
+       x = "Heart Disease",
+       y = "Oldpeak",
        fill = "Heart Disease") +
   theme_minimal()
 ```
+#need to switch it out to a more informative graph (raincloud plot, bee plot) (library load), and make it more decsriptive and easier to read and understand.
+
 
 
 
