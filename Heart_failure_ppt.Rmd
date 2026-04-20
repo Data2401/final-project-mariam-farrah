@@ -1,0 +1,403 @@
+---
+title: "Heart Prediction Model"
+author: "Farrah Johnson and Mariam Ikram"
+date: "2026-04-20"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Introduction
+
+This data is a CSV from Kaggle based on 5 conjoined datasets on patients with heart disease around the world. This data combined 11 factors that shows the strongest correlation with the onset of heart failure with a total of 918 observations.
+
+## Problems and Questions
+
+Women have been historically medically underdiagnosed, so to understand heart failure statistics, we will be evaluating:
+
+- How do women and men differ in total heart failure statistics?
+
+- What leading factors contribute to heart disease the most?
+
+- What are the important demographics of the sample and how do they correlate?
+
+## What libraries did you use?
+
+- tidyverse: data wrangling (dplyr), plotting (ggplot2), and general data manipulation (forcats)
+
+- janitor: cleans columns names and simple tabulations
+- knitr: Create nice tables in the report
+
+- kableExtra: Enhancing table appearance (border, alignment, etc.)
+
+- ggthemes: better color themes for data distribution
+
+- ggdist: For visualizing data distribution in a more efficient way
+
+- ggbeeswarm: Enhances points for categorical data in raincloud plots
+
+
+## Our unfilitered data
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+
+# tidyverse: data wrangling (dplyr), plotting (ggplot2), and general data manipulation (forcats)
+library(tidyverse)
+
+# janitor: cleans columns names and simple tabulations
+library(janitor)
+
+# knitr : Create nice tables in the report
+library(knitr)
+
+# kableExtra: Enhancing table appearance (border, alignment, etc.)
+library(kableExtra)
+
+#ggthemes: better themes for data distribution
+library(ggthemes)
+
+#ggdist: For visualizing data distribution in a more efficient way
+library(ggdist)
+
+#ggbeeswarm: Enhances points for categorical data in raincloud plots
+library(ggbeeswarm)
+
+```
+
+```{r import}
+# Import the CSV
+heart_raw <- read.csv("heart.csv")
+
+# Inspect raw structure
+glimpse(heart_raw)
+```
+We first read in the CSV file and use glimpse() to inspect the raw imported data. We'll go more into the important pieces of information that we pulled from this dataset on the next slide, as not all data had a surprising correlation with our hypothesis.
+
+## Leading indications of heart disease
+
+Several variables in this dataset come from electrocardiograms (ECG) and exercise stress tests. These exercises help determine how the heart responds to physical activity and whether blood flow to the heart is reduced. 
+
+- ST Segment/ ST-T Wave: The ST segment is part of the ECG waveform. Abnormal changes in this segment can indicate reduced blood flow to the heart (ischemia) or other electrical disturbances. 
+
+- LV Hypertrophy (Left Ventricular Hypertrophy): occurs ventricle- the main pumping chamber of the heart- becomes thickened. Often resulting from long standing high blood pressure or other conditions that forces the heart to work harder. LV Hypertrophy is important because it increases the risk heart failure, and other cardiac events. 
+
+- Oldpeak: This measures how much the ST segment drops during the exercise compared to rest. Higher values often indicate that the heart is not receiving enough oxygen.
+
+- ST Slope: This describes the direction of the ST segment during peak exercise (upsloping, flat, downsloping). A flat or down sloping line is commonly associated with heart disease.
+
+- Exercise Angina: Indicates whether the patient experienced chest pain during exercise, which can be a sign of reduced oxygen supply to the heart. 
+
+## Cleaned dataset
+
+- We use `clean_names()` to standardize the column names. This makes it easier to reference variables in the rest of the analysis (for example, `chest_pain_type` instead of `ChestPainType`). 
+
+- Next we mutate our dataset, recoding clinical abbreviations with their full descriptive names. Now values such as `M` and `F` are now `Male` and `Female`, along with several others.
+
+- We use `fct_recode()` as opposed to simply converting variables to factors, because `fct_recode()` allows us to explicitly map each original value to a new, more readable label, improving clarity, reducing the chance of errors, and making the dataset easier to interpret in later summaries, analysis, and visualizations.
+```{r clean_up, message=FALSE, warning=FALSE,}
+# ------------------
+# Data Cleaning
+# ------------------
+
+# Clean column names
+heart <- heart_raw %>% 
+  clean_names() # converts column names to snake_case, lowercase, no spaces
+
+# Recode Sex (F/M -> Female/Male)
+heart <- heart %>% 
+  mutate(sex = fct_recode(factor(sex),
+                          "Female" = "F",
+                          "Male" = "M"
+                          ))
+
+# Recode chest pain type abbreviations
+heart <- heart %>% 
+  mutate(chest_pain_type = fct_recode(factor(chest_pain_type),
+                                      "Atypical Angina" = "ATA", 
+                                      "Asymptomatic" = "ASY",
+                                      "Non-Anginal Pain" = "NAP", 
+                                      "Typical Angina" = "TA"
+                                      ))
+
+
+# Recode resting ECG type abbreviations
+heart <- heart %>% 
+  mutate(resting_ecg = fct_recode(factor(resting_ecg),
+                                  "ST-T Abnormality" = "ST",
+                                  "LV Hypertrophy" = "LVH",
+                                  "Normal" = "Normal"
+                                  ))
+
+# Recode binary variables (0/1 or N/Y -> No/Yes)
+heart <- heart %>% 
+  mutate(across(c(fasting_bs, exercise_angina, heart_disease), ~ {
+    # Turn the current column (.x) into a factor
+    fct_col <- factor(.x)
+    
+    # Recode that factor
+    fct_recode(fct_col,
+               "Yes" = "1", "Yes" = "Y",
+               "No" = "0", "No" = "N"
+               )
+  }))
+
+# Check structure after cleaning
+glimpse(heart)
+```
+
+## Duplicates and Missing Values
+
+```{r missing_values}
+
+# count missing values in each column
+missing_vals <- colSums(is.na(heart))
+missing_vals
+
+```
+- After cleaning the data we check for missing values. Missing values indicate incomplete data which can skew summary statistics if not handled correctly. The results show this dataset has no missing values, therefore the data is complete and requires no further action in this regard.
+```{r duplicate_check}
+
+# Check for duplicates
+duplicates <- heart %>% duplicated()
+
+duplicates_table <- duplicates %>% table()
+
+duplicates_table
+
+```
+Here we check for duplicates in the rows of the data set using duplicated(). Duplicates can occur when data is collected from multiple sources or from errors in entry, if duplicates were found I would remove them to ensure the integrity of the data. Since no duplicates were found, no further action is required. 
+
+
+## Clean Sampling and Dictionary
+
+- Because this is a large dataset, we must pull a smaller random sample from it, shown in the code below: 
+```{r clean_comparisons}
+
+# Pulls out necessary data and changes the heart disease to a string to make it more decipherable 
+# The 0 and 1 values in heart_disease instead of yes and no was driving me crazy. I cleaned it up and stored it in a variable.
+
+heart_clean <- heart %>%
+  mutate(heart_disease = factor(heart_disease,
+                               levels = c(0, 1),
+                               labels = c("No", "Yes")))
+
+set.seed(123)
+random_sample <- heart_clean %>%
+  sample_n(20)
+#I set a seed here so the data we're pulling is more random, as head(20) will only pull the first 20. 
+
+
+random_sample %>%
+  select(age, sex, heart_disease, exercise_angina, st_slope , oldpeak) %>%
+
+  arrange(age) %>%
+  head(20)
+
+# gives an average for necessary data for a better comparison
+
+
+heart_clean %>%
+  select(age, sex, heart_disease, exercise_angina, st_slope , oldpeak) %>%
+  
+  group_by(heart_disease) %>%
+  summarise("Average age" = mean(age),
+            "Old Peak" = mean(oldpeak))
+
+
+```
+
+- We also added a variable dictionary, so the terms we use can be easily referenced later on:
+
+```{r variable_dictionary}
+#-----------------------
+# Variable Dictionary
+#-----------------------
+
+variable_dictionary <- tibble(
+  variable = c(
+    "age", "sex", "chest_pain_type", "resting_bp", "cholesterol", "fasting_bs",
+    "resting_ecg", "max_hr", "exercise_angina", "oldpeak", "st_slope", "heart_disease"),
+  description = c(
+    "Age of patients in years",
+    "Biological sex (Male/Female)",
+    "Type of chest pain experienced",
+    "Resting blood pressure (mm Hg)",
+    "Serum cholestrol level (mg/dL)",
+    "Fasting blood sugar > 120 mg/dl (Yes/No)",
+    "Resting electrocardiogram results (Normal, ST-T Abnormality, LV Hypertrophy)",
+    "Maximum heart rate achieved during exercise",
+    "Excercise-induced angina (Yes/No)",
+    "ST depression induced by exercise relative to rest",
+    "Slope of the peak ST segment",
+    "Presence of heart disease (Yes/No)"
+    )
+  )
+
+variable_dictionary %>% 
+  kable(caption = "Variable Dictionary for Heart Dataset") %>% 
+  kable_styling(bootstrap_options = c("striped", "bordered"), full_width = FALSE)
+
+
+```
+
+
+## Final clean dataset (condensed view)
+
+```{r}
+#-------------------------
+# Sample of Cleaned Data
+#-------------------------
+
+heart %>% 
+  slice_head(n = 10) %>% 
+  kable(caption = "Sample of Cleaned Heart Dataset") %>% 
+  kable_styling(bootstrap_options = c("striped", "bordered"), full_width = FALSE)
+
+```
+
+## Outliers
+
+- To identify potential outliers, we created boxplots for the main numeric variables in the dataset, including, age, cholesterol, max heart rate, oldpeak, resting blood pressure, etc. In this data we will not remove the outliers because they represent real cases where patients do not fit within the "norms" of heart failure. 
+
+```{r outliers}
+#---------------------
+# Check for Outliers
+#---------------------
+heart %>% 
+  select(age, resting_bp, cholesterol, max_hr, oldpeak) %>% 
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value") %>% 
+  ggplot(aes(x = variable, y = value)) +
+  geom_boxplot(fill = "cadetblue", alpha = 0.7) +
+  labs(
+    title = "Boxplots for Detecting Outliers in Key Numeric Variables",
+    x = "Variable",
+    y = "Value"
+  ) +
+  theme_minimal()
+
+
+```
+
+## Male and Female Distribution
+
+- The bar chart shows the count of male vs female patients. This dataset contains shows significantly more males than females patients. This imbalance is important showing that raw counts alone can be misleading, hinting at sample bias and oversampling.
+
+```{r sex_count}
+#-----------------------------------
+# Count Bar Chart (Male vs Female)
+#-----------------------------------
+heart %>% 
+  ggplot(aes(x = sex)) +
+  geom_bar(fill = "darkgray") +
+  labs(title = "Count of Male vs Female Patients",
+       x = "Sex",
+       y = "Count") +
+  theme_minimal()
+```
+
+## Heart Disease Proportion by Sex
+
+This proportion bar chart shows the prevalence of heart disease in males vs females. We used a proportion chart due to the raw count imbalance. A proportion bar chart is best to showcase a direct comparison, normalizing each group to a 100%, regardless of actual count. 
+- The proportion chart shows that about 63%  of males have heart disease in comparison to only 26% of females that do. This correlates with real world known heart disease patterns.
+
+```{r heart_disease_by_sex}
+#--------------------------------------------
+# Heart Disease Proportion (Male vs Female)
+#--------------------------------------------
+heart %>% 
+  ggplot(aes(x = sex, fill = heart_disease)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("No" = "#619CFF", "Yes" = "#d62728")) +
+  labs(title = "Proportion of Heart Disease by Sex",
+       x = "Sex",
+       y = "Percentage") +
+  theme_minimal()
+```
+
+
+## Disease vs. No Disease
+- What symptoms are typically associated with heart disease? 
+- What symptoms distinguish heart disease from no heart disease?
+
+
+## Disease vs. No Disease
+
+```{r chest_pain_type_distribution}
+#--------------------------------------------
+# Chest Pain Type Distribution (Disease vs. No Disease)
+#--------------------------------------------
+heart %>% 
+  ggplot(aes(x = chest_pain_type, fill = heart_disease)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Chest Pain Type by Heart Disease Status",
+       x = "Chest Pain Type",
+       y = "Percentage",
+       fill = "Heart Disease") +
+  theme_minimal()
+```
+
+We can conclude from this chart that asymptomatic chest pain type is most prevalent among individuals with heart disease, followed by typical angina, non-anginal pain, and atypical angina. this establishes chest pain type as a meaningful symptom to explore by gender.
+
+## Disease vs. No Disease
+
+Oldpeak measures how much the ST segment drops during the exercise compared to rest. Higher values often indicate that the heart is not receiving enough oxygen.
+
+```{r oldpeak_distribution}
+#--------------------------------------------
+# Oldpeak Distribution (Disease vs. No Disease)
+#--------------------------------------------
+heart %>% 
+  ggplot(aes(x = heart_disease, y = oldpeak, fill = heart_disease)) +
+  geom_boxplot() +
+  
+  labs(title = "Oldpeak by Heart Disease Status",
+       x = "Heart Disease",
+       y = "Oldpeak") +
+  theme_minimal()
+```
+
+
+## Disease vs. No Disease
+
+Individuals with heart disease tend to have lower maximum heart rates than those without the condition, shown by the distribution of the raincloud plot below. We can conclude that lower heart rates is a significant indicator of heart disease through the distance of the median points (red dots), but not the only indicator, as the graphs show an overlap.
+
+```{r max_hr}
+#--------------------------------------------
+# Max heart rate (Disease vs. No Disease)
+#--------------------------------------------
+heart %>% 
+  ggplot(aes(x = heart_disease, y = max_hr, fill = heart_disease)) +
+  stat_halfeye(adjust = 0.5, width = 0.7, justification = -0.2, .width = 0, alpha = 0.5) +
+  geom_beeswarm(dodge.width = 0.2, alpha = 0.3, size = 1.3) +
+  stat_summary(fun = median, size = 4, geom = "point", color = "red") +
+  labs(
+    title = "Heart Rate Distribution by Heart Disease Status",
+    x = "Heart Disease Status",
+    y = "Max Heart Rate"
+  ) + 
+  theme_minimal()
+  
+  
+```
+
+
+## Disease vs. No Disease
+
+A down and flat ST slope is associated with patients with heart disease, this chart showcases patients with heart disease are similarly prone to a down or flat ST slope with minimal variance, reinforcing its diagnostic relevance. 
+
+```{r ST_slope}
+#--------------------------------------------
+# ST Slope (Disease vs. No Disease)
+#--------------------------------------------
+heart %>% 
+  ggplot(aes(x = st_slope, fill = heart_disease)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "ST Slope by Heart Disease Status",
+       x = "ST Slope", y = "Percentage", fill = "Heart Disease") +
+  theme_minimal()
+```
