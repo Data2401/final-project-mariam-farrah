@@ -409,7 +409,7 @@ This chart shows whether women with heart disease present more with atypical ang
 #--------------------------------------------
 # Oldpeak Distribution by Sex (Heart Disease Only)
 #--------------------------------------------
-heart %>% 
+heart_disease_only %>% 
   ggplot(aes(x = sex, y = oldpeak, fill = sex)) +
   geom_boxplot() +
   
@@ -418,7 +418,22 @@ heart %>%
        y = "Oldpeak") +
   theme_minimal()
 ```
-The boxplot shows a clear and significant difference between male and female oldpeak (explain the significance of oldpeak in heart disease correlation), concluding that women present clear difference in ischema severity and diagnostic patterns...
+The boxplot shows similar oldpeak symtoms between both sex.
+
+
+```{r max_hr}
+#--------------------------------------------
+# Max heart rate by Sex (Heart Disease Only)
+#--------------------------------------------
+heart %>% 
+  ggplot(aes(x = sex, y = max_hr, fill = heart_disease)) +
+  geom_boxplot() +
+  #scale_fill_manual(values = c())
+  labs(title = "Max Heart Rate by Heart Disease Status",
+       x = "Heart Disease",
+       y = "Max Heart Rate") +
+  theme_minimal()
+```
 
 
 ```{r boxplot_correlations}
