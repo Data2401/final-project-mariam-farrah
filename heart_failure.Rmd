@@ -266,7 +266,7 @@ heart %>%
        y = "Count") +
   theme_minimal()
 ```
-The bar chart shows the count of male vs female patients. This bar chart shows that there are significantly more males than females patients in this dataset. Which is important... might show bias, oversmapling, ...
+The bar chart shows the count of male vs female patients. This dataset contains shows significantly more males than females patients. This imbalance is important showing that raw counts alone can be misleading, hinting at sample bias, oversampling ... 
 
 ```{r heart_disease_by_sex}
 #--------------------------------------------
@@ -285,23 +285,43 @@ heart %>%
 This proportion bar chart shows the prevalence of heart disease in males vs females. I used a proportion chart due to the raw count imbalance- a proportion bar chart is best to showcase a direct comparison, normalizing each group to a 100%, regardless of actual count. 
 The proportion chart shows that about 63%  of males have heart disease in comparison to only 26% of females that do. This correlates with real world known heart disease patterns.
 
+** Disease vs. No Disease
+* What symptoms are typically associated with heart disease? What symptoms distinguish heart disease from no heart disease?
 
-** What symptoms are typically associated with heart disease? What symptoms distinguish heart disease from no heart disease?
-```{r heart_disease_by_sex}
+```{r chest_pain_type_distribution}
 #--------------------------------------------
-# Heart Disease Proportion (Male vs Female)
+# Chest Pain Type Distribution (Disease vs. No Disease)
 #--------------------------------------------
 heart %>% 
-  ggplot(aes(x = sex, fill = heart_disease)) +
+  ggplot(aes(x = chest_pain_type, fill = heart_disease)) +
   geom_bar(position = "fill") +
   scale_y_continuous(labels = scales::percent) +
-  scale_fill_manual(values = c("No" = "#619CFF", "Yes" = "#d62728")) +
-  labs(title = "Proportion of Heart Disease by Sex",
-       x = "Sex",
-       y = "Percentage") +
+  labs(title = "Chest Pain Type by Heart Disease Status",
+       x = "Chest Pain Type",
+       y = "Percentage",
+       fill = "Heart Disease") +
   theme_minimal()
 ```
+We can conclude from this chart that asymptomatic chest pain type is most prevalent among individuals with heart disease, followed by typical angina, non-anginal pain, and atypical angina
+#explain these chest pain types, in the variable dictionary sections and add it to the dict, 
+# arrange it in descending order
+# change color (all same?)
+#add elbratory summary under the graph to remind audience of what the symptoms mean
 
+```{r oldpeak_distribution}
+#--------------------------------------------
+# Oldpeak Distribution (Disease vs. No Disease)
+#--------------------------------------------
+heart %>% 
+  ggplot(aes(x = oldpeak, fill = heart_disease)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Oldpeak by Heart Disease Status",
+       x = "Chest Pain Type",
+       y = "Percentage",
+       fill = "Heart Disease") +
+  theme_minimal()
+```
 
 
 
