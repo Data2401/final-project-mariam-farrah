@@ -282,6 +282,7 @@ heart %>%
   geom_boxplot(fill = "lightblue") +
   labs(title = "Outliers in Age", y = "Age") +
   theme_minimal()
+#age doesn't have any extreme outliers, meaning every patient is around give or take the same age. 
 
 # resting_bp outlier
 heart %>%
@@ -289,6 +290,7 @@ heart %>%
   geom_boxplot(fill = "lightblue") +
   labs(title = "Outliers in Resting Blood Pressure", y = "Resting Blood Pressure") +
   theme_minimal()
+# There are quite a few outliers aboove 150, and also one below a 100
 
 heart %>%
   ggplot(aes(y = max_hr)) +
@@ -296,6 +298,18 @@ heart %>%
   labs(title = "Outliers in Max Heart Rate", y = "Max Heart Rate") +
   theme_minimal()
 #MAx heart heart does have some etreme outliers in the lwoer end of the spectrum with a heart rate less than a 100. 
+
+# Frequency table for chest pain type outliers
+heart %>% 
+  tabyl(chest_pain_type) %>% 
+  
+  # function in janitor package to clean up appearances of percentages in frequency         tables, from decimals to a readable percentage format. 
+  adorn_pct_formatting() %>% 
+  adorn_totals("row") %>% 
+  kable(caption = "Chest Pain Type Frequency Table") %>% 
+  kable_styling(bootstrap_options = "striped")
+
+# box plots are used to evaluate/plot numerical variables, since chest pain type is categorical we evaluate it using a frequency table, to see it's
 
 # Resting B
   # select(age, resting_bp, cholesterol, max_hr, oldpeak) %>% 
