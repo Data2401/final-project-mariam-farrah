@@ -215,7 +215,7 @@ variable_dictionary <- tibble(
   description = c(
     "Age of patients in years",
     "Biological sex (Male/Female)",
-    "Type of chest pain experienced ()",
+    "Type of chest pain experienced (Typical Angina, Atypical Angina, Non-Anginal Pain, Asymptomatic)",
     "Resting blood pressure (mm Hg)",
     "Serum cholestrol level (mg/dL)",
     "Fasting blood sugar > 120 mg/dl (Yes/No)",
