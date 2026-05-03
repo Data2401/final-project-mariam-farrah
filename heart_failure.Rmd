@@ -13,7 +13,9 @@ Women are underdiagnosed, often present atypical symptoms, medical datasets ofte
 Does dataset represent those patterns?
 Heart disease is one of the leading causes of death worldwide, and the number 1 cause of death in the United States, about ... Americans from all ... (should i go into stats?) (citation) Understanding the its risk factors in pivotal for medical professionals and the general public ...
 
-Data Exploration: (what question we're answering and exploring, background on the data: where we got it from, the link, the author, the reasoning for the data being made available, important variables and their meanings)
+Data Exploration: 
+https://www.kaggle.com/datasets/fedesoriano/heart-failure-prediction/data
+(what question we're answering and exploring, background on the data: where we got it from, the link, the author, the reasoning for the data being made available, important variables and their meanings)
 I want to explore the difference in symptoms between males and females who have heart disease, because historically women have been underrepresented in medicine, their symptoms differ, and this contributes to misdiagnosis.
 
 Packages: 
@@ -132,6 +134,24 @@ duplicates_table
 
 ```
 Here we check for duplicates in the rows of the data set using duplicated(). Duplicates can occur when data is collected from multiple sources or from errors in entry, if duplicates were found I would remove them to ensure the integrity of the data. Since no duplicates were found, no further action is required. 
+
+
+```{r cholesterol_check}
+
+# Check how many cholesterol = 0
+heart %>% summarize(zero_chol_vals = sum(cholesterol == 0, na.rm = TRUE))
+
+# Replace those 0 cholesterol values with NA
+heart <- heart %>% 
+  mutate(cholesterol = na_if(cholesterol, 0))
+
+# Check to see if 0 cholesterols' were replaced with NA 
+heart %>% summarize(remaining_zeros = sum(cholesterol == 0, na.rm = TRUE))
+
+```
+When we took a closer look at the dataset we noticed, the data had 179 cholesterols equal to 0, which is a big number and cholesterol cannot be 0, it can only be assumed that the choelstrol values were missing for those patients and were replaced with 0s as ... 
+
+
 
 ```{r, include = FALSE}
 
@@ -254,7 +274,7 @@ heart %>%
   geom_boxplot(fill = "cadetblue", alpha = 0.7) +
   labs(
     title = "Boxplots for Detecting Outliers in Key Numeric Variables",
-    x = "Variable",
+    x = "Variable", 
     y = "Value"
   ) +
   theme_minimal()
@@ -274,7 +294,7 @@ heart %>%
        x = "Sex",
        y = "Count") +
   theme_minimal()
-ggsave("cholesterol_hd.png", width = 7, height = 5, dpi = 300)
+#ggsave("cholesterol_hd.png", width = 7, height = 5, dpi = 300)
 ```
 The bar chart shows the count of male vs female patients. This dataset contains shows significantly more males than females patients. This imbalance is important showing that raw counts alone can be misleading, hinting at sample bias, oversampling ... 
 
@@ -290,7 +310,7 @@ heart %>%
        x = "Sex",
        y = "Percentage") +
   theme_minimal()
-ggsave("new_disease_proportion_hd.png", width = 7, height = 5, dpi = 300)
+#ggsave("new_disease_proportion_hd.png", width = 7, height = 5, dpi = 300)
 ```
 This proportion bar chart shows the prevalence of heart disease in males vs females. I used a proportion chart due to the raw count imbalance- a proportion bar chart is best to showcase a direct comparison, normalizing each group to a 100%, regardless of actual count. 
 The proportion chart shows that about 63%  of males have heart disease in comparison to only 26% of females that do. This correlates with real world known heart disease patterns.
@@ -313,7 +333,7 @@ heart %>%
        y = "Percentage",
        fill = "Heart Disease") +
   theme_minimal()
-ggsave("chestPainDist_dis_noDis_hd.png", width = 7, height = 5, dpi = 300)
+#ggsave("chestPainDist_dis_noDis_hd.png", width = 7, height = 5, dpi = 300)
 
 ```
 We can conclude from this chart that asymptomatic chest pain type is most prevalent among individuals with heart disease, followed by typical angina, non-anginal pain, and atypical angina... this establishes chest pain type as a meaningful symptom to explore by gender.
@@ -334,7 +354,7 @@ heart %>%
        x = "Heart Disease",
        y = "Oldpeak") +
   theme_minimal()
-ggsave("oldpeak_d_nd.png", width = 7, height = 5, dpi = 300)
+#ggsave("oldpeak_d_nd.png", width = 7, height = 5, dpi = 300)
 ```
 
 Individuals with heart disease tend to have lower maximum heart rates than those without the condition, shown by the distribution of the raincloud plot below. We can conclude that lower heart rates is a significant indicator of heart disease through the distance of the median points (red dots), but not the only indicator, as the graphs show an overlap.
@@ -363,7 +383,7 @@ heart %>% ggplot(aes(x = heart_disease, y = max_hr, fill = heart_disease)) +
   labs(title = "Max Heart Rate Distribution by Heart Disease Status",
        x = "Heart Disease Status", y = "Max Heart Rate") +
   theme_minimal()
-ggsave("maxHR_diseaseStatus_boxplot_hd.png", width = 7, height = 5, dpi = 300)  
+#ggsave("maxHR_diseaseStatus_boxplot_hd.png", width = 7, height = 5, dpi = 300)  
 ```
 Patients with heart disease tend to have a lower heart rate during exercise in comparison to those with no heart disease in alignment with reduced cardiac functions
 
@@ -380,7 +400,7 @@ heart %>%
   labs(title = "ST Slope by Heart Disease Status",
        x = "ST Slope", y = "Percentage", fill = "Heart Disease") +
   theme_minimal()
-ggsave("st_slope_hd.png", width = 7, height = 5, dpi = 300)
+#ggsave("st_slope_hd.png", width = 7, height = 5, dpi = 300)
 ```
 A down and flat ST slope is associated with patients with heart disease, this chart showcases patients with heart disease are similarly prone to a down or flat ST slope with minimal variance, reinforcing its diagnostic relevance. 
 
@@ -410,7 +430,7 @@ heart %>%
     fill = "Heart Disease"
   ) +
   theme_minimal()
-ggsave("resting_ECG_hd.png", width = 7, height = 5, dpi = 300)  
+#ggsave("resting_ECG_hd.png", width = 7, height = 5, dpi = 300)  
 ```
 
 Population analysis:
@@ -427,7 +447,7 @@ ggplot(heart, aes(x = resting_ecg, fill = sex)) +
     fill = "Sex"
   ) +
   theme_minimal()
-ggsave("Resting_ECG_allSex_allpatient.png", width = 7, height = 5, dpi = 300)  
+#ggsave("Resting_ECG_allSex_allpatient.png", width = 7, height = 5, dpi = 300)  
 ```
 
 
@@ -449,7 +469,7 @@ ggplot(heart, aes(x = sex, y = cholesterol, fill = sex)) +
   labs(title = "Cholesterol Levels by Sex (All Patients)",
        x = "Sex", y = "Cholesterol (mg/dL)") +
   theme_minimal()
-ggsave("chol_allSex_hd.png", width = 7, height = 5, dpi = 300)  
+#ggsave("chol_allSex_hd.png", width = 7, height = 5, dpi = 300)  
 ```
 
 
@@ -460,7 +480,7 @@ ggplot(heart, aes(x = sex, y = oldpeak, fill = sex)) +
   labs(title = "Oldpeak by Sex (All Patients)",
        x = "Sex", y = "Oldpeak") +
   theme_minimal()
-ggsave("oldpeak_allSex_hd.png", width = 7, height = 5, dpi = 300)
+#ggsave("oldpeak_allSex_hd.png", width = 7, height = 5, dpi = 300)
 ```
 
 
@@ -471,7 +491,7 @@ ggplot(heart, aes(x = sex, y = max_hr, fill = sex)) +
   labs(title = "Max Heart Rate by Sex (All Patients)",
        x = "Sex", y = "Max Heart Rate") +
   theme_minimal()
-ggsave("maxHR_allSex_hd.png", width = 7, height = 5, dpi = 300)
+#ggsave("maxHR_allSex_hd.png", width = 7, height = 5, dpi = 300)
   
 ```
 
@@ -502,7 +522,7 @@ ggplot(heart_disease_only, aes(x = resting_ecg, fill = sex)) +
   theme_minimal()
 
 
-ggsave("ECG_rest_disease_only_Sex_hd.png", width = 7, height = 5, dpi = 300)
+#ggsave("ECG_rest_disease_only_Sex_hd.png", width = 7, height = 5, dpi = 300)
 ```
 
 
@@ -527,7 +547,7 @@ heart_disease_only %>% ggplot(aes(x = sex, y = cholesterol, fill = sex)) +
        x = "Sex", y = "Cholesterol (mg/dL)") +
   theme_minimal()
 
-ggsave("chol_level_disease_only_Sex_hd.png", width = 7, height = 5, dpi = 300)
+#ggsave("chol_level_disease_only_Sex_hd.png", width = 7, height = 5, dpi = 300)
 ```
 
 
@@ -544,7 +564,7 @@ heart_disease_only %>%
        y = "Percentage",
        fill = "Chest Pain Type") +
   theme_minimal()
-ggsave("chstPain_disease_Sex_hd.png", width = 7, height = 5, dpi = 300)
+#ggsave("chstPain_disease_Sex_hd.png", width = 7, height = 5, dpi = 300)
 ```
 This chart shows whether women with heart disease present more with atypical angina or asymptomatic chest pains. Both of which are associated with heart disease. This graph presents women and men with heart disease both experience Asymptomatic heart pain almost equally however women experience atypical angina significantly more than men. Non-anginal pain and typical angina is more often in males than in females. 
 
@@ -560,7 +580,7 @@ heart_disease_only %>%
        x = "Sex",
        y = "Oldpeak") +
   theme_minimal()
-ggsave("oldpeak_disease_Sex_hd.png", width = 7, height = 5, dpi = 300)
+#ggsave("oldpeak_disease_Sex_hd.png", width = 7, height = 5, dpi = 300)
 ```
 The boxplot shows similar oldpeak symtoms between both sex.
 
@@ -577,7 +597,7 @@ heart_disease_only %>%
        x = "Sex",
        y = "Max Heart Rate") +
   theme_minimal()
-ggsave("max_hr_disease_Sex_hd.png", width = 7, height = 5, dpi = 300)
+
 ```
 The plot shows men and women differ in exercise response when disease is present with women ... a higher heart than men in general...
 
@@ -592,7 +612,7 @@ heart_disease_only %>%
   labs(title = "ST Slope by Sex (Heart Disease Only)",
        x = "Sex", y = "Percentage", fill = "ST Slope") +
   theme_minimal()
-ggsave("st_slope_disease_Sex_hd.png", width = 7, height = 5, dpi = 300)
+
 ```
 Both genders fairly similar.
 
@@ -614,6 +634,7 @@ ggplot(heart, aes(x = factor(heart_disease), y = oldpeak, fill = factor(heart_di
        x = "Heart ") +
   theme_minimal()
 
+  
 ```
 
 
