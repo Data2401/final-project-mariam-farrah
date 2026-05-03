@@ -149,7 +149,7 @@ heart <- heart %>%
 heart %>% summarize(remaining_zeros = sum(cholesterol == 0, na.rm = TRUE))
 
 ```
-When we took a closer look at the dataset we noticed, the data had 179 cholesterols equal to 0, which is a big number and cholesterol cannot be 0, it can only be assumed that the choelstrol values were missing for those patients and were replaced with 0s as ... 
+When we took a closer look at the dataset we noticed, the data had 179 cholesterol values equal to 0. Since cholesterol level of 0 is physiologically impossible, it can be assumed that those 0 values represent missing patient data, so we replaced all those 0 values in cholesterol with NA to show correctly showcase the gaps in our analysis. 
 
 
 
