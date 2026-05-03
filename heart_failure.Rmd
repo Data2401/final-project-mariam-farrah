@@ -8,21 +8,21 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-Intro: 
+# Intro
 Women are underdiagnosed, often present atypical symptoms, medical datasets often underrepsent women...
 Does dataset represent those patterns?
 Heart disease is one of the leading causes of death worldwide, and the number 1 cause of death in the United States, about ... Americans from all ... (should i go into stats?) (citation) Understanding the its risk factors in pivotal for medical professionals and the general public ...
 
-Data Exploration: 
+# Data Exploration: 
 https://www.kaggle.com/datasets/fedesoriano/heart-failure-prediction/data
 (what question we're answering and exploring, background on the data: where we got it from, the link, the author, the reasoning for the data being made available, important variables and their meanings)
 I want to explore the difference in symptoms between males and females who have heart disease, because historically women have been underrepresented in medicine, their symptoms differ, and this contributes to misdiagnosis.
 
-Packages: 
+# Packages: 
 tidyverse: data wrangling (dplyr), plotting (ggplot2) and general data manipulation 
 ggplot2
 dyplr
-janitor #cleans columns names and simple tabulations
+janitor
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -58,6 +58,8 @@ glimpse(heart_raw)
 ```
 
 We first read in the CSV file and use glimpse() to inspect the raw imported data
+
+# Data Cleaning
 
 ```{r clean_up}
 # ------------------
@@ -145,11 +147,21 @@ heart %>% summarize(zero_chol_vals = sum(cholesterol == 0, na.rm = TRUE))
 heart <- heart %>% 
   mutate(cholesterol = na_if(cholesterol, 0))
 
-# Check to see if 0 cholesterols' were replaced with NA 
+# Check to see if 0 cholesterol values were replaced with NA 
 heart %>% summarize(remaining_zeros = sum(cholesterol == 0, na.rm = TRUE))
 
 #Check to see if resting_bp has any 0 values
 heart %>% summarize(zero_resting_bp_vals = sum(resting_bp == 0, na.rm = TRUE))
+
+# Replace those 0 resting_bp values with NA
+heart <- heart %>% 
+  mutate(resting_bp = na_if(resting_bp, 0))
+
+# Check to see if 0 cholesterol and resting_bp values were replaced
+heart %>% 
+  summarize(
+    zero_check_chol = sum(cholesterol == 0, na.rm = TRUE),
+    zero_check_rest_bp = sum(resting_bp == 0, na.rm = TRUE))
 
 ```
 While analyzing the dataset through boxplots and charts we noticed the dataset had variables that equaled to 0 in variables where a 0 is a physiological impossibility such as cholesterol, the data had 179 cholesterol values equal to 0, and resting blood pressure, where one of the values were a 0.
@@ -270,11 +282,9 @@ heart %>%
 
 ```
 
-#need to seperate these outlier plots in differnt plots; remove cholestrol, add type of anginal pain
-```{r outliers}
-#---------------------
 # Check for Outliers
-#---------------------
+
+```{r outliers}
 
 # age outlier
 heart %>%
@@ -325,7 +335,7 @@ heart %>%
 
 
 ```
-To identify potential outliers I created boxplots for the main numeric variables in the dataset. Variables including, age, chect pain type, max heart rate, oldpeak, resting blood pressure... In this data we will not remove the outliers because htye reporent real cases weher the ...                                                                              
+To identify potential outliers I created boxplots for the main numeric variables in the dataset. Variables including, age, chect pain type, max heart rate, oldpeak, resting blood pressure... In this data we will not remove the outliers because they reporent real cases weher the ...                                                                              
 **EDA
 ```{r sex_count}
 #-----------------------------------
