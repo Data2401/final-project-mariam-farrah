@@ -1,5 +1,5 @@
 ---
-title: "Heart Prediction Model"
+title: "Gender Differences in Heart Disease Symptoms"
 author: "Farrah Johnson and Mariam Ikram"
 date: "2026-04-06"
 output: html_document
@@ -30,8 +30,16 @@ Source:
 fedesoriano. (September 2021). Heart Failure Prediction Dataset. Retrieved [April 2026] from https://www.kaggle.com/fedesoriano/heart-failure-prediction.
 
 
+# Packages
+- tidyverse: data wrangling (dplyr), plotting (ggplot2), and general data manipulation (forcats)
 
-# Load Packages
+- janitor: cleans columns names and simple tabulations
+
+- knitr : Create nice tables in the report
+
+- kableExtra: Enhancing table appearance (border, alignment, etc.)
+
+
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 
 # tidyverse: data wrangling (dplyr), plotting (ggplot2), and general data manipulation (forcats)
@@ -48,7 +56,9 @@ library(kableExtra)
 
 ```
 
-```{r import}
+A glimpse at the raw heart dataset
+
+```{r import, echo=FALSE, message=FALSE, warning=FALSE}
 # Import the CSV
 heart_raw <- read.csv("heart.csv")
 
@@ -56,14 +66,14 @@ heart_raw <- read.csv("heart.csv")
 glimpse(heart_raw)
 ```
 
-We first read in the CSV file and use glimpse() to inspect the raw imported data
-
 # Data Preperation
-Now we will clean, mutate, and check our data for 
 
-## Clean Column Names and Mutate Dataset
+Before beginning the analysis, we cleaned the dataset by standardizing variable names, converting categorical variables, and checking for missing values. The cleaning code was executed but suppressed in the final report to maintain readability.
 
-```{r clean_up}
+
+```{r clean_up, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+# Clean Column Names and Mutate Dataset
 
 # clean column names
 heart <- heart_raw %>% 
@@ -110,14 +120,11 @@ heart <- heart %>%
 # Check structure after cleaning
 glimpse(heart)
 ```
- 
-We use 'clean_names()' to standardize the column names. This makes it easier to reference variables in the rest of the analysis (for example, 'chest_pain_type' instead of 'ChestPainType'). 
-Next we mutate our dataset, recoding clinical abbreviations with their full descriptive names. Now values such as 'M' and 'F' are now 'Male' and 'Female', along with several others.
-We use 'fct_recode()' as opposed to simply converting variables to factors, because 'fct_recode()' allows us to explicitly map each original value to a new, more readable label, improving clarity, reducing the chance of errors, and making the dataset easier to interpret in later summaries, analysis, and visualizations.
 
-## Zero Value Check
 
-```{r zero_value_check}
+```{r zero_value_check, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+# Zero Value Check
 
 # Check how many cholesterol = 0
 heart %>% summarize(zero_chol_vals = sum(cholesterol == 0, na.rm = TRUE))
@@ -144,12 +151,8 @@ heart %>%
 
 ```
 
-While analyzing the dataset through boxplots and charts we noticed the dataset had variables that equaled to 0 in variables where a 0 is a physiological impossibility such as cholesterol, the data had 179 cholesterol values equal to 0, and resting blood pressure, where one of the values were a 0.
-It can be assumed that those 0 values represent missing patient data, so we replaced all those 0 values with NA to accurately showcase the missing data in our dataset and analysis. 
 
-## Check for Missing Values
-
-```{r missing_values}
+```{r missing_values, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 
 # count missing values in each column
 missing_vals <- colSums(is.na(heart))
@@ -157,13 +160,11 @@ missing_vals
 
 ```
 
-After cleaning the data we check for missing values. Missing values indicate incomplete data which can skew summary statistics if not handled correctly. The results show this dataset has no missing values, therefore the data is complete requiring no further action in this regard.
 
-## Check for Duplicates
-
-```{r duplicate_check}
+```{r duplicate_check, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 
 # Check for duplicates
+
 duplicates <- heart %>% duplicated()
 
 duplicates_table <- duplicates %>% table()
@@ -172,11 +173,10 @@ duplicates_table
 
 ```
 
-Here we check for duplicates in the rows of the data set using duplicated(). Duplicates can occur when data is collected from multiple sources or from errors in entry, if duplicates were found I would remove them to ensure the integrity of the data. Since no duplicates were found, no further action is required. 
 
-## Final Clean Dataset (condensed view)
+```{r cleaned_condensed_dataset, echo=FALSE}
 
-```{r cleaned_condensed_dataset}
+# Final Clean Dataset (condensed view)
 
 heart %>% 
   slice_head(n = 10) %>% 
@@ -185,12 +185,10 @@ heart %>%
 
 ```
 
-## Variable Dictionary
 
-```{r variable_dictionary}
-#-----------------------
+```{r variable_dictionary, echo=FALSE}
+
 # Variable Dictionary
-#-----------------------
 
 variable_dictionary <- tibble(
   variable = c(
@@ -219,6 +217,7 @@ variable_dictionary %>%
 
 ```
 
+
 ## Clinical Background for Key Heart Variables
 
 Several variables in this dataset come from electrocardiograms (ECG) (test that records the electrical signals of the heart) and exercise stress tests. These exercises help determine how the heart responds to physical activity and whether blood flow to the heart is reduced. 
@@ -232,29 +231,30 @@ Several variables in this dataset come from electrocardiograms (ECG) (test that 
 - Oldpeak: This measures how much the ST segment drops during the exercise compared to rest. Higher values often indicative of ischemia.
 
 - ST Slope: This describes the direction of the ST segment during peak exercise 
--- Upsloping: generally indicative of a healthy heart
--- Flat: related to ischemia, indicative of heart disease
--- Downsloping: related to ischemia, indicative of heart disease
+  - Upsloping: generally indicative of a healthy heart
+  - Flat: related to ischemia, indicative of heart disease
+  - Downsloping: related to ischemia, indicative of heart disease
 
 - Exercise Angina: Indicates whether the patient experienced chest pain during exercise, which can be a sign of reduced oxygen supply to the heart. 
--- Typical Angina: chest pain caused by ischemia; triggered by exertion, relieved by rest
--- Atypical Angina: chest pain that has some, but not all features of typical angina
--- Non-Anginal Pain: chest pain that has one or none of the features of typical angina.
--- Asymptomatic: no pain felt but heart issues may be present 
+  - Typical Angina: chest pain caused by ischemia; triggered by exertion, relieved by rest
+  - Atypical Angina: chest pain that has some, but not all features of typical angina
+  - Non-Anginal Pain: chest pain that has one or none of the features of typical angina.
+  - Asymptomatic: no pain felt but heart issues may be present 
 
 - Resting ECG: electrical activity of your heart while relaxed. 
--- Normal: electrical signal and muscle thickness seem normal.
--- ST-T Wave Abnormality: shifts in ST segment that may suggest ischemia or an electrolyte imbalance; may be an indicator of heart disease
--- Left Ventricular Hypertrophy (LVH): "tall" waves in ECG indicating large, thick muscle mass of heart chamber due to long standing conditions like high blood pressure; strong indicator of heart disease
+  - Normal: electrical signal and muscle thickness seem normal.
+  - ST-T Wave Abnormality: shifts in ST segment that may suggest ischemia or an electrolyte imbalance; may be an indicator of heart disease
+  - Left Ventricular Hypertrophy (LVH): "tall" waves in ECG indicating large, thick muscle mass of heart chamber due to long standing conditions like high blood pressure; strong indicator of heart disease
 
 
 ## Check for Outliers
 
 To identify potential outliers, we created boxplots to evaluate the main numeric variables associated with heart disease in this dataset, including age, maximum heart rate, oldpeak, and resting blood pressure. Categorical variables such as chest pain type, resting ECG, and ST slope were excluded because they cannot have statistical outliers; instead, their distributions are examined later in the EDA section using bar charts.
 
-### Age Outliers
 
-```{r age_outliers}
+```{r age_outliers, echo=FALSE}
+
+# Age Outliers
 
 heart %>%
   ggplot(aes(y = age)) +
@@ -266,12 +266,14 @@ heart %>%
 
 Age does not show any extreme outliers, meaning all the patients fall around a consistent age range.
 
-### Resting Blood Pressure Outliers
 
-```{r resting_bp_outliers}
+```{r resting_bp_outliers, echo=FALSE}
+# Resting Blood Pressure Outliers
 
 heart %>%
   ggplot(aes(y = resting_bp)) +
+  
+  #na.rm to supress warning
   geom_boxplot(fill = "lightblue", na.rm = TRUE) +
   labs(title = "Outliers in Resting Blood Pressure", y = "Resting Blood Pressure") +
   theme_minimal()
@@ -280,11 +282,10 @@ heart %>%
 
 Resting blood pressure shows several outliers above 150, and one unusually low value below a 100. A subset of patient differ significantly from the rest in their resting blood pressure reading. 
 
-Note: We used "na.rm = TRUE" in geom_boxplot() to suppress the warning indicating a row was removed due to NA values created during data cleaning. Since the warning doesn't affect the visualization and is not indicative of anything significant it was silenced for a cleaner report.
 
-### Max Heart Rate Outliers
+```{r max_hr_outliers, echo=FALSE}
 
-```{r max_hr_outliers}
+# Max Heart Rate Outliers
 
 heart %>%
   ggplot(aes(y = max_hr)) +
@@ -296,9 +297,10 @@ heart %>%
 
 Max heart heart does have some extreme outliers in the lower end of the spectrum with heart rates below a 100, showing a small subset of patients had significantly reduced exercise capacity in comparison to the rest of the sample.  
 
-### Oldpeak Outliers
 
-```{r oldpeak_outliers}
+```{r oldpeak_outliers, echo=FALSE}
+
+# Oldpeak Outliers
 
 heart %>%
   ggplot(aes(y = oldpeak)) +
@@ -312,16 +314,16 @@ Oldpeak showed several extreme outliers above 2.5 and one unusually low value be
 
 While we identified several outliers across the variables we will be using to analyze this dataset, we chose not to remove them. In many analyses outliers are removed to ensure the most accurate representation of the data. However, in this case, the outliers represent real patients with clinically significant conditions, removing them would eliminate important clinical variations leading to possibly incorrect and inaccurate representation and understanding of the population. Keeping them in ensures the analysis reflects the full range of the patients present with their unique variations.  
 
-# EDA
+
+# Data Analysis
 
 We will now explore our dataset through visualizations and summary statistics.
 
-### Count Bar Chart (Male vs Female)
 
-```{r sex_count}
-#-----------------------------------
+```{r sex_count, echo=FALSE}
+
 # Count Bar Chart (Male vs Female)
-#-----------------------------------
+
 heart %>% 
   ggplot(aes(x = sex)) +
   geom_bar(fill = "darkgray") +
@@ -334,12 +336,11 @@ heart %>%
 
 The bar chart shows the count of male vs female patients. This dataset contains significantly more males than females patients, creating a clear imbalance in the sample. This imbalance is important showing that raw counts alone can be misleading when comparing groups. It also hints at sampling bias or oversampling of male patients, which is common in meany heart data sets. Because of this imbalance proportion based visualizations are necessary later in the analysis to make fair comparisons between both genders. 
 
-### Heart Disease Proportion Bar Chart (Male vs Female)
 
-```{r heart_disease_by_sex}
-#--------------------------------------------
+```{r heart_disease_by_sex, echo=FALSE}
+
 # Heart Disease Proportion (Male vs Female)
-#--------------------------------------------
+
 heart %>% 
   ggplot(aes(x = sex, fill = heart_disease)) +
   geom_bar(position = "fill") +
@@ -354,13 +355,15 @@ heart %>%
 This proportion bar chart shows the prevalence of heart disease in males vs females. I used a proportion chart due to the raw count imbalance- a proportion bar chart is best to showcase a direct comparison, normalizing each group to a 100%, regardless of actual count. 
 The proportion chart shows that about 63%  of males have heart disease in comparison to only 26% of females that do. This correlates with real world known heart disease patterns.
 
+
 ## Disease vs. No Disease
 
 What symptoms are typically associated with heart disease? What symptoms distinguish heart disease from no heart disease?
 
-### Chest Pain Type Distribution (Disease vs. No Disease)
 
-```{r chest_pain_type_distribution}
+```{r chest_pain_type_distribution, echo=FALSE}
+
+# Chest Pain Type Distribution (Disease vs. No Disease)
 
 heart %>% 
   ggplot(aes(x = chest_pain_type, fill = heart_disease)) +
@@ -376,9 +379,10 @@ heart %>%
 
 This chart shows chest pain types between within each heart disease group. Among individual's with heart disease asymptomatic chest pain type is most prevalent, followed by typical angina, non-anginal pain, and atypical angina. This highlights that many patients with heart disease do not experience typical chest pain symptoms, marking it as a meaningful symptom to explore by gender.
 
-### Oldpeak Distribution (Disease vs. No Disease)
 
-```{r oldpeak_distribution}
+```{r oldpeak_distribution, echo=FALSE}
+
+# Oldpeak Distribution (Disease vs. No Disease)
 
 heart %>% 
   ggplot(aes(x = heart_disease, y = oldpeak, fill = heart_disease)) +
@@ -392,9 +396,9 @@ heart %>%
 
 Individuals with heart disease tend to have a higher oldpeak in comparison to people with no heart disease, reflective of typical symptoms due to more pronounced ST‑segment depression during exercise. This pattern aligns with typical symptoms of ischemia and reinforces oldpeak as an important variable for distinguishing between the two groups.
 
-### Max heart rate (Disease vs. No Disease)
 
-```{r max_hr}
+```{r max_hr, echo=FALSE}
+# Max heart rate (Disease vs. No Disease)
 
 heart %>% ggplot(aes(x = heart_disease, y = max_hr, fill = heart_disease)) +
   geom_boxplot() +
@@ -406,9 +410,10 @@ heart %>% ggplot(aes(x = heart_disease, y = max_hr, fill = heart_disease)) +
 
 Individuals with heart disease tend to have lower maximum heart rates than those without the condition, shown by the distribution of the box plot, in alignment with reduced cardiac functions. We can conclude that lower heart rates is a significant indicator of heart disease, but not the only indicator, as the graphs show an overlap.
 
-### ST Slope (Disease vs. No Disease)
 
-```{r ST_slope}
+```{r ST_slope, echo=FALSE}
+
+# ST Slope (Disease vs. No Disease)
 
 heart %>% 
   ggplot(aes(x = st_slope, fill = heart_disease)) +
@@ -422,9 +427,9 @@ heart %>%
 
 A down and flat ST slope is associated with patients with heart disease, this chart showcases patients with heart disease are prone to a down or flat ST slope with minimal variance, reinforcing its diagnostic relevance. 
 
-### Resting ECG (Disease vs. No Disease)
 
-```{r resting_ECG}
+```{r resting_ECG, echo=FALSE}
+# Resting ECG (Disease vs. No Disease)
 
 heart %>% 
   ggplot(aes(x = resting_ecg, fill = heart_disease)) +
@@ -439,13 +444,18 @@ heart %>%
   theme_minimal()
 
 ```
+
 Among people with heart disease, ST–T abnormalities are the most common Resting ECG finding, followed by left ventricular hypertrophy (LVH) and then normal ECG results. This indicates that many patients with heart disease show electrical evidence of ischemia or structural changes at rest. In contrast, individuals without heart disease show a higher proportion of normal ECGs, marking it as a clinically relevant marker between disease and no disease population
 
+
 ## Male vs Female (Disease vs No Disease)
+
 Do these symptoms differ between men and women, accounting for disease vs. no disease.
 
-### Resting ECG Results by Sex and Heart Disease
-```{r }
+
+```{r resting_ecg_sex_disease, echo=FALSE}
+
+# Resting ECG Results by Sex and Heart Disease
 
 heart %>% 
   ggplot(aes(x = resting_ecg, fill = heart_disease)) +
@@ -466,9 +476,9 @@ Women and men present vastly different resting ECG pattern across disease groups
 In contrast, men show the expected clinical pattern: the disease group dominates, especially in ST–T abnormalities, followed by LV hypertrophy and then normal results- a pattern more consistent with typical heart disease presentation.
 
 
-### Chest Pain Type by Sex and Heart Disease
+```{r chest_pain_type_sex_disease, echo=FALSE}
 
-```{r chest_pain_type_sex_disease}
+# Chest Pain Type by Sex and Heart Disease
 
 heart %>% 
   ggplot(aes(x = chest_pain_type, fill = heart_disease)) +
@@ -480,10 +490,12 @@ heart %>%
        y = "Percentage",
        fill = "Heart Disease") +
   theme_minimal() +
+  
   # angle text (prevent overlapping)
   theme(axis.text.x = element_text(angle = 30, hjust = 1))
 
 ```
+
 Asymptomatic is the most common chest pain type in the heart disease population, in both women and men.  However, the patterns for the remaining chest pain types differ greatly by sex.
 
 In women, the other chest pain categories' (atypical angina, non‑anginal pain, and typical angina) distribution is relatively flat, showing little variation across chest pain types. Each make up less than 15% of cases, with atypical angina being the least common. This aligns with clinical evidence showing that women often present with non‑classic chest pain, which contributes to under‑recognition of heart disease in female patients
@@ -491,9 +503,9 @@ In women, the other chest pain categories' (atypical angina, non‑anginal pain,
 In men, the pattern is more distinct: after asymptomatic pain, typical angina is the next most common, followed by non‑anginal pain, with atypical angina being the least frequent, creating a clear gradient of chest pain types across the males with heart disease population, representing typically associated heart disease ischemic patterns and symptoms.
 
 
-### Oldpeak by Sex and Heart Disease
+```{r oldpeak_distribution_sex_disease, echo=FALSE}
 
-```{r oldpeak_distribution_sex_disease}
+# Oldpeak by Sex and Heart Disease
 
 heart %>% 
   ggplot(aes(x = heart_disease, y = oldpeak, fill = heart_disease)) +
@@ -509,9 +521,10 @@ heart %>%
 
 Women with no heart disease have a higher oldpeak than men with no heart disease, showing a greater ST segment depression during exercise in the non-disease group. However in the heart diseased population, women and men both have a similar old peak distribution. This aligns with clinical trials showing that old peak is generally an unreliable indicator of heart disease in women than in men.
 
-### Max Heart Rate by Sex and Heart Disease
 
-```{r max_hr_sex_disease}
+```{r max_hr_sex_disease, echo=FALSE}
+
+# Max Heart Rate by Sex and Heart Disease
 
 heart %>% 
   ggplot(aes(x = heart_disease, y = max_hr, fill = heart_disease)) +
@@ -524,13 +537,14 @@ heart %>%
   theme_minimal()
 
 ```
+
 Max heart rate between men and women across the non-disease population is fairly similar. 
 
 The heart disease population however shows a marked gender difference. Women with heart disease reach a higher max heart rate than men with heart disease. With the upper range values reaching over 150 while the men do not reach that level; aligning with evidence that women present different ischemic pattern in comparison to men.  
 
-### ST Slope by Sex and Heart Disease
+```{r ST_slope_sex_disease, echo=FALSE}
 
-```{r ST_slope_sex_disease}
+# ST Slope by Sex and Heart Disease
 
 heart %>% 
   ggplot(aes(x = st_slope, fill = heart_disease)) +
@@ -547,9 +561,9 @@ In this dataset, men with heart disease most often show a flat ST slope, followe
 
 Clinically, ST slope is known to be a stronger predictor of heart disease in women than oldpeak. This is reflective in the chart- over 15% of men with heart disease still show an upward slope (a pattern usually seen in healthier hearts), while fewer than 10% of women do, reinforcing the diagnostic importance of ST slope in identifying heart disease in women.
 
-### Resting Blood Pressure by Sex and Heart Disease
+```{r resting_bp_sex_disease, echo=FALSE}
 
-```{r resting_bp_sex_disease}
+# Resting Blood Pressure by Sex and Heart Disease
 
 heart %>% 
   ggplot(aes(x = heart_disease, y = resting_bp, fill = heart_disease)) +
@@ -563,6 +577,7 @@ heart %>%
   theme_minimal()
   
 ```
+
 Women and men show similar resting blood pressure in the non‑disease group.
 However, among individuals with heart disease, women present with higher resting blood pressure than men. This aligns with clinical evidence showing that elevated blood pressure is a stronger predictor of heart disease in women, with risk increasing even at levels as low as 110 mmHg, below the traditional 120 mmHg threshold. As women age and transition through menopause, their resting blood pressure often catches up to and surpasses men’s, sharply increasing cardiovascular risk.
 
