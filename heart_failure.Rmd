@@ -41,11 +41,8 @@ library(kableExtra)
 #ggthemes: better themes for data distribution
 library(ggthemes)
 
-#ggdist: For visualizing data distribution in a more efficient way
+#ggdist: For visualizing data distribution in a more efficient way ????
 library(ggdist)
-
-#ggbeeswarm: Enhances points for categorical data in raincloud plots
-library(ggbeeswarm)
 
 ```
 
@@ -269,8 +266,8 @@ ST in the dataset refers to the ST segment (ST doesn't stand for anything, it is
 - Exercise Angina: Indicates whether the patient experienced chest pain during exercise, which can be a sign of reduced oxygen supply to the heart. 
 -- Types of Anginal pain...
 
-Final clean dataset (condensed view)
-```{r}
+# Final Clean Dataset (condensed view)
+```{r cleaned_condensed_dataset}
 #-------------------------
 # Sample of Cleaned Data
 #-------------------------
@@ -284,58 +281,95 @@ heart %>%
 
 # Check for Outliers
 
-```{r outliers}
+To identify potential outliers, we created boxplots and a frequency table to visually evaluate the main variables associated with heart disease in this dataset, individually. These variables including, age, chest pain type, max heart rate, oldpeak, and resting blood pressure.
 
-# age outlier
+```{r age_outliers}
+#----------------
+# Age Outliers
+#----------------
+
 heart %>%
   ggplot(aes(y = age)) +
   geom_boxplot(fill = "lightblue") +
   labs(title = "Outliers in Age", y = "Age") +
   theme_minimal()
-#age doesn't have any extreme outliers, meaning every patient is around give or take the same age. 
 
-# resting_bp outlier
+```
+
+Age does not show any extreme outliers, meaning all the patients fall around a consistent age range.
+
+```{r resting_bp_outliers}
+#--------------------------------
+# Resting Blood Pressure Outliers
+#--------------------------------
+
 heart %>%
   ggplot(aes(y = resting_bp)) +
-  geom_boxplot(fill = "lightblue") +
+  geom_boxplot(fill = "lightblue", na.rm = TRUE) +
   labs(title = "Outliers in Resting Blood Pressure", y = "Resting Blood Pressure") +
   theme_minimal()
-# There are quite a few outliers aboove 150, and also one below a 100
+
+```
+
+Resting blood pressure shows several outliers above 150, and one unusually low value below a 100. A subset of patient differ significantly from the rest in their resting blood pressure reading. 
+
+Note: We used "na.rm = TRUE" in geom_boxplot() to suppress the warning indicating a row was removed due to NA values created during data cleaning. Since the warning doesn't affect the visualization and is not indicative of anything significant it was silenced for a cleaner report.
+
+```{r max_hr_outliers}
+#-------------------------
+# Max Heart Rate Outliers
+#-------------------------
 
 heart %>%
   ggplot(aes(y = max_hr)) +
   geom_boxplot(fill = "lightblue") +
   labs(title = "Outliers in Max Heart Rate", y = "Max Heart Rate") +
   theme_minimal()
-#MAx heart heart does have some etreme outliers in the lwoer end of the spectrum with a heart rate less than a 100. 
 
-# Frequency table for chest pain type outliers
+```
+
+Max heart heart does have some extreme outliers in the lower end of the spectrum with heart rates below a 100, showing a small subset of patients had significantly reduced exercise capacity in comparison to the rest of the sample.  
+
+```{r chest_pain_type_outliers}
+#----------------------------
+# Chest Pain Type Outliers
+#----------------------------
+
 heart %>% 
   tabyl(chest_pain_type) %>% 
   
-  # function in janitor package to clean up appearances of percentages in frequency         tables, from decimals to a readable percentage format. 
+  #decimal to percentage 
   adorn_pct_formatting() %>% 
+  
+  #sum of rows
   adorn_totals("row") %>% 
+  
   kable(caption = "Chest Pain Type Frequency Table") %>% 
   kable_styling(bootstrap_options = "striped")
 
-# box plots are used to evaluate/plot numerical variables, since chest pain type is categorical we evaluate it using a frequency table, to see it's
+```
 
-# Resting B
-  # select(age, resting_bp, cholesterol, max_hr, oldpeak) %>% 
-  # pivot_longer(cols = everything(), names_to = "variable", values_to = "value") %>% 
-  # ggplot(aes(x = variable, y = value)) +
-  # geom_boxplot(fill = "cadetblue", alpha = 0.7) +
-  # labs(
-  #   title = "Boxplots for Detecting Outliers in Key Numeric Variables",
-  #   x = "Variable", 
-  #   y = "Value"
-  # ) +
-  # theme_minimal()
+Box plots are used to evaluate/plot numerical variables, but because chest pain type is a categorical variable it cannot have statistical outliers. However, we evaluate it using a frequency table to determine how chest pain types are distributed throughout the dataset, how often each category appears and how rare/imbalanced a category is in comparison to the rest. We also use functions from the janitor package to calculate the category count, convert them to percentages, and add a total row for easier interpretation.  
 
+Asymptomatic is the most common type of chest pain at 54%, followed by non-anginal pain, atypical angina, and finally typical angina being the least frequent category. This indicates that majority of the patients do not present with classic chest pain symptoms. 
+
+```{r oldpeak_outliers}
+#-------------------
+# OldPeak Outliers
+#-------------------
+
+heart %>%
+  ggplot(aes(y = oldpeak)) +
+  geom_boxplot(fill = "lightblue") +
+  labs(title = "Outliers in OldPeak", y = "OldPeak") +
+  theme_minimal()
 
 ```
-To identify potential outliers I created boxplots for the main numeric variables in the dataset. Variables including, age, chect pain type, max heart rate, oldpeak, resting blood pressure... In this data we will not remove the outliers because they reporent real cases weher the ...                                                                              
+
+OldPeak showed several extreme outliers above 2.5 and one unusually low value below -2.5. This indicates that a subset of patients experienced significantly greater and unusually negative ST segment depression during exercise. 
+
+While we identified several outliers across the variables we will be using to analyze this dataset, we chose not to remove them. In many analyses outliers are removed to ensure the most accurate representation of the data. However, in this case, the outliers represent real patients with clinically significant conditions, removing them would eliminate important clinical variations leading to possibly incorrect and inaccurate representation and understanding of the population. Keeping them in ensures the analysis reflects the full range of the patients present with their unique variations.  
+
 **EDA
 ```{r sex_count}
 #-----------------------------------
@@ -350,7 +384,7 @@ heart %>%
   theme_minimal()
 #ggsave("cholesterol_hd.png", width = 7, height = 5, dpi = 300)
 ```
-The bar chart shows the count of male vs female patients. This dataset contains shows significantly more males than females patients. This imbalance is important showing that raw counts alone can be misleading, hinting at sample bias, oversampling ... 
+The bar chart shows the count of male vs female patients. This dataset contains significantly more males than females patients. This imbalance is important showing that raw counts alone can be misleading, hinting at sample bias, oversampling ... 
 
 ```{r heart_disease_by_sex}
 #--------------------------------------------
