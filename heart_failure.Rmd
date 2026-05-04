@@ -186,6 +186,8 @@ heart %>%
 ```
 
 
+The table below provides a variable dictionary summarizing each variable in the dataset, including its definition and measurement type. This helps the reader understand the structure of the dataset and the role each variable plays in the analysis.
+
 ```{r variable_dictionary, echo=FALSE}
 
 # Variable Dictionary
@@ -220,36 +222,36 @@ variable_dictionary %>%
 
 ## Clinical Background for Key Heart Variables
 
-Several variables in this dataset come from electrocardiograms (ECG) (test that records the electrical signals of the heart) and exercise stress tests. These exercises help determine how the heart responds to physical activity and whether blood flow to the heart is reduced. 
+Several variables in this dataset come from electrocardiograms (ECG) test that records the electrical signals of the heart and exercise stress tests. These exercises help determine how the heart responds to physical activity and whether blood flow to the heart is reduced. 
 
-* Ischemia: lack of blood flow and consequentially oxygen to a body part; in this case the heart (myocardial ischemia).
+* Ischemia: lack of blood flow and consequentially oxygen to a body part; in this case the heart (myocardial ischemia)
 
-* Angina: clinical term for chest pain caused by ischemia.
+* Angina: clinical term for chest pain caused by ischemia
 
-* ST in this dataset refers to the ST segment of the ECG waveform, specifically the portion between the S point and the T point. This segment is clinically important because changes in its level or slope can indicate ischemia.
+* ST in this dataset refers to the ST segment of the ECG waveform, specifically the portion between the S point and the T point. This segment is clinically important because changes in its level or slope can indicate ischemia
 
-- Oldpeak: This measures how much the ST segment drops during the exercise compared to rest. Higher values often indicative of ischemia.
+- Oldpeak: This measures how much the ST segment drops during the exercise compared to rest. Higher values often indicative of ischemia
 
 - ST Slope: This describes the direction of the ST segment during peak exercise 
   - Upsloping: generally indicative of a healthy heart
   - Flat: related to ischemia, indicative of heart disease
   - Downsloping: related to ischemia, indicative of heart disease
 
-- Exercise Angina: Indicates whether the patient experienced chest pain during exercise, which can be a sign of reduced oxygen supply to the heart. 
+- Exercise Angina: Indicates whether the patient experienced chest pain during exercise, which can be a sign of reduced oxygen supply to the heart
   - Typical Angina: chest pain caused by ischemia; triggered by exertion, relieved by rest
   - Atypical Angina: chest pain that has some, but not all features of typical angina
   - Non-Anginal Pain: chest pain that has one or none of the features of typical angina.
   - Asymptomatic: no pain felt but heart issues may be present 
 
-- Resting ECG: electrical activity of your heart while relaxed. 
-  - Normal: electrical signal and muscle thickness seem normal.
+- Resting ECG: electrical activity of your heart while relaxed 
+  - Normal: electrical signal and muscle thickness seem normal
   - ST-T Wave Abnormality: shifts in ST segment that may suggest ischemia or an electrolyte imbalance; may be an indicator of heart disease
   - Left Ventricular Hypertrophy (LVH): "tall" waves in ECG indicating large, thick muscle mass of heart chamber due to long standing conditions like high blood pressure; strong indicator of heart disease
 
 
 ## Check for Outliers
 
-To identify potential outliers, we created boxplots to evaluate the main numeric variables associated with heart disease in this dataset, including age, maximum heart rate, oldpeak, and resting blood pressure. Categorical variables such as chest pain type, resting ECG, and ST slope were excluded because they cannot have statistical outliers; instead, their distributions are examined later in the EDA section using bar charts.
+To identify potential outliers, we created boxplots to evaluate the main numeric variables associated with heart disease in this dataset, including age, maximum heart rate, oldpeak, and resting blood pressure. Categorical variables such as chest pain type, resting ECG, and ST slope were excluded because they cannot have statistical outliers; instead, their distributions are examined later in the EDA section.
 
 
 ```{r age_outliers, echo=FALSE}
@@ -312,6 +314,7 @@ heart %>%
 
 Oldpeak showed several extreme outliers above 2.5 and one unusually low value below -2.5. This indicates that a subset of patients experienced significantly greater and unusually negative ST segment depression during exercise. 
 
+
 While we identified several outliers across the variables we will be using to analyze this dataset, we chose not to remove them. In many analyses outliers are removed to ensure the most accurate representation of the data. However, in this case, the outliers represent real patients with clinically significant conditions, removing them would eliminate important clinical variations leading to possibly incorrect and inaccurate representation and understanding of the population. Keeping them in ensures the analysis reflects the full range of the patients present with their unique variations.  
 
 
@@ -352,13 +355,16 @@ heart %>%
 
 ```
 
-This proportion bar chart shows the prevalence of heart disease in males vs females. I used a proportion chart due to the raw count imbalance- a proportion bar chart is best to showcase a direct comparison, normalizing each group to a 100%, regardless of actual count. 
-The proportion chart shows that about 63%  of males have heart disease in comparison to only 26% of females that do. This correlates with real world known heart disease patterns.
+This proportion bar chart shows the prevalence of heart disease in males vs females. We used a proportion chart due to the raw count imbalance. 
+
+The proportion chart shows that about 63%  of males have heart disease in comparison to only 26% of females that do. This correlates with real world known heart disease patterns, which indicates men are more likely to have heart disease than women.
+
 
 
 ## Disease vs. No Disease
 
 What symptoms are typically associated with heart disease? What symptoms distinguish heart disease from no heart disease?
+
 
 
 ```{r chest_pain_type_distribution, echo=FALSE}
@@ -402,13 +408,13 @@ Individuals with heart disease tend to have a higher oldpeak in comparison to pe
 
 heart %>% ggplot(aes(x = heart_disease, y = max_hr, fill = heart_disease)) +
   geom_boxplot() +
-  labs(title = "Max Heart Rate Distribution by Heart Disease Status",
+  labs(title = "Max Heart Rate by Heart Disease Status",
        x = "Heart Disease Status", y = "Max Heart Rate") +
   theme_minimal()
  
 ```
 
-Individuals with heart disease tend to have lower maximum heart rates than those without the condition, shown by the distribution of the box plot, in alignment with reduced cardiac functions. We can conclude that lower heart rates is a significant indicator of heart disease, but not the only indicator, as the graphs show an overlap.
+Individuals with heart disease tend to have lower maximum heart rates than those without the condition, as shown by the distribution of the box plot, is in alignment with reduced cardiac functions. We can conclude that lower heart rates is a significant indicator of heart disease.
 
 
 ```{r ST_slope, echo=FALSE}
@@ -445,7 +451,7 @@ heart %>%
 
 ```
 
-Among people with heart disease, ST–T abnormalities are the most common Resting ECG finding, followed by left ventricular hypertrophy (LVH) and then normal ECG results. This indicates that many patients with heart disease show electrical evidence of ischemia or structural changes at rest. In contrast, individuals without heart disease show a higher proportion of normal ECGs, marking it as a clinically relevant marker between disease and no disease population
+Among people with heart disease, ST–T abnormalities are the most common resting ECG finding, followed by left ventricular hypertrophy (LVH) and then normal ECG results. This indicates that many patients with heart disease show electrical evidence of ischemia or structural changes at rest. In contrast, individuals without heart disease show a higher proportion of normal ECGs, marking it as a clinically relevant marker of heart disease.
 
 
 ## Male vs Female (Disease vs No Disease)
