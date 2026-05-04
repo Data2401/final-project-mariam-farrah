@@ -8,10 +8,26 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 # Intro
-Women are underdiagnosed, often present atypical symptoms, medical datasets often underrepsent women...
-Does dataset represent those patterns?
-Heart disease is one of the leading causes of death worldwide, and the number 1 cause of death in the United States, about ... Americans from all ... (should i go into stats?) (citation) Understanding the its risk factors in pivotal for medical professionals and the general public ...
+
+Heart disease is the leading cause of death in the United States, making it essential to understand how its risk factors and symptoms appear across different populations. This issue is especially important for women, who have historically been underrepresented in medical research and often present with atypical or non‑classic symptoms. As a result, women are more likely to be misdiagnosed or diagnosed later than men, contributing to preventable complications and poorer outcomes; raising the question of whether commonly used datasets reflect the same disparities observed in real clinical settings.
+
+This analysis addresses two central questions: 
+
+1) What does heart disease look like in the general population represented in this dataset?
+2) Do symptom patterns differ between men and women, and between individuals with and without heart disease? 
+
+By answering these questions, we can evaluate whether the dataset mirrors known clinical trends or whether it introduces biases that may influence predictive modeling or interpretation.
+
+To address these question we use the "Heart Failure Prediction Dataset" from Kaggle, compiled by FEDESORIANO in 2021. This dataset merges five different clinical studies conducted in Hungary, Switzerland, and the United States, joined by 11 demographic, clinical, and exercise related variables, resulting in 918 observations. Because the dataset merges multiple sources, the variables may reflect differences in measurement or population characteristics, making exploratory analysis especially important. 
+
+Our approach uses exploratory data analysis techniques to compare how heart‑disease‑related symptoms and indicators appear in men versus women. We begin by using boxplots to identify potential outliers in numeric variables such as age, resting blood pressure, maximum heart rate, and oldpeak. Categorical variables—including chest pain type, resting ECG, and ST slope are evaluated using bar charts and proportion plots to examine distribution patterns across sex and disease status. We then use faceted visualizations to directly compare men and women within the heart‑disease population.
+
+This analytic strategy allows us to determine whether the dataset mirrors known clinical trends, such as women presenting different ECG patterns, showing different chest‑pain distributions, or being underrepresented in diagnostic categories. Ultimately, this analysis helps the reader understand both how heart disease manifests in this dataset and whether these patterns align with real‑world disparities that affect women’s cardiovascular health.
+
+Source:
+fedesoriano. (September 2021). Heart Failure Prediction Dataset. Retrieved [April 2026] from https://www.kaggle.com/fedesoriano/heart-failure-prediction.
 
 # Data Exploration: 
 https://www.kaggle.com/datasets/fedesoriano/heart-failure-prediction/data
@@ -19,10 +35,12 @@ https://www.kaggle.com/datasets/fedesoriano/heart-failure-prediction/data
 I want to explore the difference in symptoms between males and females who have heart disease, because historically women have been underrepresented in medicine, their symptoms differ, and this contributes to misdiagnosis.
 
 # Packages: 
-tidyverse: data wrangling (dplyr), plotting (ggplot2) and general data manipulation 
-ggplot2
-dyplr
-janitor
+- tidyverse
+- janitor
+- knitr
+- kableExtra
+
+
 # Load Packages
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -37,12 +55,6 @@ library(knitr)
 
 # kableExtra: Enhancing table appearance (border, alignment, etc.)
 library(kableExtra)
-
-#ggthemes: better themes for data distribution
-library(ggthemes)
-
-#ggdist: For visualizing data distribution in a more efficient way ????
-library(ggdist)
 
 ```
 
@@ -59,14 +71,11 @@ We first read in the CSV file and use glimpse() to inspect the raw imported data
 # Data Cleaning
 Now we will check and clean our data....
 
-## Clean Column Names and Mutate dataset
+## Clean Column Names and Mutate Dataset
 
 ```{r clean_up}
-# ------------------
-# Data Cleaning
-# ------------------
 
-# Clean column names
+# clean column names
 heart <- heart_raw %>% 
   clean_names() # converts column names to snake_case, lowercase, no spaces
 
@@ -112,9 +121,9 @@ heart <- heart %>%
 glimpse(heart)
 ```
  
-We use `clean_names()` to standardize the column names. This makes it easier to reference variables in the rest of the analysis (for example, `chest_pain_type` instead of `ChestPainType`). 
-Next we mutate our dataset, recoding clinical abbreviations with their full descriptive names. Now values such as `M` and `F` are now `Male` and `Female`, along with several others.
-We use `fct_recode()` as opposed to simply converting variables to factors, because `fct_recode()` allows us to explicitly map each original value to a new, more readable label, improving clarity, reducing the chance of errors, and making the dataset easier to interpret in later summaries, analysis, and visualizations.
+We use 'clean_names()' to standardize the column names. This makes it easier to reference variables in the rest of the analysis (for example, 'chest_pain_type' instead of 'ChestPainType'). 
+Next we mutate our dataset, recoding clinical abbreviations with their full descriptive names. Now values such as 'M' and 'F' are now 'Male' and 'Female', along with several others.
+We use 'fct_recode()' as opposed to simply converting variables to factors, because 'fct_recode()' allows us to explicitly map each original value to a new, more readable label, improving clarity, reducing the chance of errors, and making the dataset easier to interpret in later summaries, analysis, and visualizations.
 
 ## Check for Missing Values
 
