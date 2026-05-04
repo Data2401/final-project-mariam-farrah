@@ -508,8 +508,11 @@ heart %>%
   theme(axis.text.x = element_text(angle = 30, hjust = 1))
 
 ```
-...
-This chart shows whether women with heart disease present more with atypical angina or asymptomatic chest pains. Both of which are associated with heart disease. This graph presents women and men with heart disease both experience Asymptomatic heart pain almost equally however women experience atypical angina significantly more than men. Non-anginal pain and typical angina is more often in males than in females. 
+Asymptomatic is the most common chest pain type in the heart disease population, in both women and men.  However, the patterns for the remaining chest pain types differ greatly by sex.
+In women, the other chest pain categories' (atypical angina, non‑anginal pain, and typical angina) distribution is relatively flat, showing little variation across chest pain types. Each make up less than 15% of cases, with atypical angina being the least common. This aligns with clinical evidence showing that women often present with non‑classic chest pain, which contributes to under‑recognition of heart disease in female patients
+
+In men, the pattern is more distinct: after asymptomatic pain, typical angina is the next most common, followed by non‑anginal pain, with atypical angina being the least frequent, creating a clear gradient of chest pain types across the males with heart disease population, representing typically associated heart disease ischemic patterns and symptoms.
+
 
 ### Oldpeak by Sex and Heart Disease
 
