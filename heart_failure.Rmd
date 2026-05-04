@@ -29,11 +29,6 @@ This analytic strategy allows us to determine whether the dataset mirrors known 
 Source:
 fedesoriano. (September 2021). Heart Failure Prediction Dataset. Retrieved [April 2026] from https://www.kaggle.com/fedesoriano/heart-failure-prediction.
 
-# Packages Used: 
-- tidyverse
-- janitor
-- knitr
-- kableExtra
 
 
 # Load Packages
@@ -63,8 +58,8 @@ glimpse(heart_raw)
 
 We first read in the CSV file and use glimpse() to inspect the raw imported data
 
-# Data Cleaning and Exploration
-Now we will check and clean our data....
+# Data Preperation
+Now we will clean, mutate, and check our data for 
 
 ## Clean Column Names and Mutate Dataset
 
@@ -179,7 +174,7 @@ duplicates_table
 
 Here we check for duplicates in the rows of the data set using duplicated(). Duplicates can occur when data is collected from multiple sources or from errors in entry, if duplicates were found I would remove them to ensure the integrity of the data. Since no duplicates were found, no further action is required. 
 
-# Final Clean Dataset (condensed view)
+## Final Clean Dataset (condensed view)
 
 ```{r cleaned_condensed_dataset}
 
@@ -224,7 +219,7 @@ variable_dictionary %>%
 
 ```
 
-** Clinical Background for Key Heart Variables
+## Clinical Background for Key Heart Variables
 
 Several variables in this dataset come from electrocardiograms (ECG) (test that records the electrical signals of the heart) and exercise stress tests. These exercises help determine how the heart responds to physical activity and whether blood flow to the heart is reduced. 
 
@@ -252,18 +247,6 @@ Several variables in this dataset come from electrocardiograms (ECG) (test that 
 -- ST-T Wave Abnormality: shifts in ST segment that may suggest ischemia or an electrolyte imbalance; may be an indicator of heart disease
 -- Left Ventricular Hypertrophy (LVH): "tall" waves in ECG indicating large, thick muscle mass of heart chamber due to long standing conditions like high blood pressure; strong indicator of heart disease
 
-# Final Clean Dataset (condensed view)
-```{r cleaned_condensed_dataset}
-#-------------------------
-# Sample of Cleaned Data
-#-------------------------
-
-heart %>% 
-  slice_head(n = 10) %>% 
-  kable(caption = "Sample of Cleaned Heart Dataset") %>% 
-  kable_styling(bootstrap_options = c("striped", "bordered"), full_width = FALSE)
-
-```
 
 ## Check for Outliers
 
@@ -554,7 +537,7 @@ heart %>%
   geom_bar(position = "fill") +
   facet_wrap(~ sex) +
   scale_y_continuous(labels = scales::percent) +
-  labs(title = "ST Slope by Sex and Heart Disease)",
+  labs(title = "ST Slope by Sex and Heart Disease",
        x = "ST Slope", y = "Percentage", fill = "Heart Disease") +
   theme_minimal()
 
@@ -570,15 +553,13 @@ Clinically, ST slope is known to be a stronger predictor of heart disease in wom
 
 heart %>% 
   ggplot(aes(x = heart_disease, y = resting_bp, fill = heart_disease)) +
-  geom_boxplot() +
+  #supress warning
+  geom_boxplot(na.rm = TRUE) +
   facet_wrap(~ sex) +
   labs(title = "Resting Blood Presssure by Sex and Heart Disease",
        x = "Heart Disease",
        y = "Resting Blood Pressure", 
        fill = "Heart Disease") +
-  theme_minimal()
-ggplot(heart, aes(x = sex, y = age, fill = sex)) +
-  geom_boxplot() +
   theme_minimal()
   
 ```
@@ -587,19 +568,18 @@ However, among individuals with heart disease, women present with higher resting
 
 # Summary 
 
+This project set out to examine how heart disease presents in the general population represented in the dataset and whether symptom patterns differ between individuals with and without heart disease, as well as between men and women. A key motivation was to evaluate whether the dataset reflects real‑world clinical disparities, particularly the well‑documented underdiagnosis and atypical symptom presentation seen in women.
+
+To answer these questions, we conducted a structured exploratory data analysis using the Heart Failure Prediction Dataset from Kaggle. We evaluated numeric variables with boxplots to identify potential outliers and examined categorical variables using bar charts and proportion plots. Faceted visualizations allowed us to compare heart‑disease vs. non‑heart‑disease groups and to explore gender differences within those groups.
+
+Our analysis revealed several patterns consistent with clinical research. Women in the dataset showed less typical chest‑pain patterns and subtler ECG changes, including differences in ST‑segment slope and exercise‑related indicators. These findings align with evidence that women often present different ischemic patterns during exercise testing, which can make heart disease harder to detect using diagnostic thresholds historically validated in male populations. We also observed that the dataset is heavily skewed toward men, nearly 80% of participants were men, mirroring the persistent underrepresentation of women in cardiovascular research.
+
+The most significant limitation in the dataset is the gender imbalance, which restricts the strength of conclusions about women’s symptom patterns. Additionally, because the dataset merges five different clinical studies, measurement differences or population variations may influence variable distributions. Future work could incorporate larger, more balanced datasets and include additional clinical variables (such as imaging or biomarkers).
+
+These results suggest that the dataset does capture some real‑world gender differences in heart‑disease presentation, but the imbalance in representation limits how confidently these patterns can be generalized. The findings highlight the importance of inclusive data collection and the need for diagnostic criteria that account for sex‑specific symptom profiles. For readers, this analysis provides a clearer understanding of how heart disease manifests across groups in this dataset and how gender may influence diagnostic indicators.
+
 Clinically, this aligns with evidence that women often present different ischemic patterns during exercise testing. Women may show fewer classic exercise‑induced heart‑rate limitations, which can make heart disease harder to detect using traditional stress‑test thresholds that were historically validated in male populations.
 
-While this dataset does reflect real‑world gender differences — such as women having less typical chest pain and subtler ECG changes — it’s important to acknowledge the limitations.
-
-The dataset is heavily skewed toward men, with nearly 80% male participants.
-
-What’s striking is that this dataset was compiled from five different sources, and even after combining them, we still see a major gender imbalance.
-
-This reinforces the gender inequality we talked about at the beginning: women are consistently underrepresented in cardiovascular research.
-
-Because of this imbalance, the patterns we observed are meaningful, but they cannot be considered fully conclusive.
-
-Instead, they highlight the need for more balanced, inclusive data in future studies..
 
 
 
