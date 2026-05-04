@@ -221,21 +221,31 @@ variable_dictionary %>%
 
 ** Clinical Background for Key Heart Variables
 
-Several variables in this dataset come from electrocardiograms (ECG) (test that record the elecrical signals of the heart) and exercise stress tests. These exercises help determine how the heart responds to physical activity and whether blood flow to the heart is reduced. 
+Several variables in this dataset come from electrocardiograms (ECG) (test that records the electrical signals of the heart) and exercise stress tests. These exercises help determine how the heart responds to physical activity and whether blood flow to the heart is reduced. 
 
-- ECG:
- 
-ST in the dataset refers to the ST segment (ST doesn't stand for anything, it is referring to the S and T points on the waves in the ECG.
-- ST Segment/ ST-T Wave: The ST segment is part of the ECG waveform. Abnormal changes in this segment can indicate reduced blood flow to the heart (ischemia) or other electrical disturbances. 
+* Ischemia: lack of blood flow and consequentially oxygen to a body part; in this case the heart (myocardial ischemia).
 
-- LV Hypertrophy (Left Ventricular Hypertrophy): occurs ventricle- the main pumping chamber of the heart- becomes thickened. Often resulting from long standing high blood pressure or other conditions that forces the heart to work harder. LV Hypertrophy is important because it increases the risk heart failure, and other cardiac events. 
+* Angina: clinical term for chest pain caused by ischemia.
 
-- Oldpeak: This measure how much the ST segment drops during the exercise compared to rest. Higher values often indicate that the heart is not receiving enough oxygen.
+* ST in this dataset refers to the ST segment of the ECG waveform, specifically the portion between the S point and the T point. This segment is clinically important because changes in its level or slope can indicate ischemia.
 
-- ST Slope: This describes the direction of the ST segment during peak exercise (upsloping, flat, downsloping). A flat or downsloping line is commonly associated with heart disease.
+- Oldpeak: This measures how much the ST segment drops during the exercise compared to rest. Higher values often indicative of ischemia.
+
+- ST Slope: This describes the direction of the ST segment during peak exercise 
+-- Upsloping: generally indicative of a healthy heart
+-- Flat: related to ischemia, indicative of heart disease
+-- Downsloping: related to ischemia, indicative of heart disease
 
 - Exercise Angina: Indicates whether the patient experienced chest pain during exercise, which can be a sign of reduced oxygen supply to the heart. 
--- Types of Anginal pain...
+-- Typical Angina: chest pain caused by ischemia; triggered by exertion, relieved by rest
+-- Atypical Angina: chest pain that has some, but not all features of typical angina
+-- Non-Anginal Pain: chest pain that has one or none of the features of typical angina.
+-- Asymptomatic: no pain felt but heart issues may be present 
+
+- Resting ECG: electrical activity of your heart while relaxed. 
+-- Normal: electrical signal and muscle thickness seem normal.
+-- ST-T Wave Abnormality: shifts in ST segment that may suggest ischemia or an electrolyte imbalance; may be an indicator of heart disease
+-- Left Ventricular Hypertrophy (LVH): "tall" waves in ECG indicating large, thick muscle mass of heart chamber due to long standing conditions like high blood pressure; strong indicator of heart disease
 
 # Final Clean Dataset (condensed view)
 ```{r cleaned_condensed_dataset}
