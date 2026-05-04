@@ -468,16 +468,7 @@ Among people with heart disease, ST–T abnormalities are the most common Restin
 ## Male vs Female (Disease vs No Disease)
 Do these symptoms differ between men and women, accounting for disease vs. no disease.
 
-```{r }
-
-# New filtered dataset
-heart_disease_only <- heart %>% filter(heart_disease == "Yes")
-  
-```
-
-We created a subset of the full heart dataset filtered to only keep individuals with heart disease. 
-
-** ECG Rest
+### Resting ECG Results by Sex and Heart Disease
 ```{r }
 
 heart %>% 
@@ -486,10 +477,10 @@ heart %>%
   facet_wrap(~ sex) +
   scale_y_continuous(labels = scales::percent) +
   labs(
-    title = "Resting ECG Results by Sex and Heart Disease Only",
+    title = "Resting ECG Results by Sex and Heart Disease",
     x = "Resting ECG Result",
     y = "Percentage",
-    fill = "Sex") +
+    fill = "Heart Disease") +
   theme_minimal()
 
 ```
@@ -550,7 +541,7 @@ heart %>%
 ```
 The plot shows men and women differ in exercise response when disease is present with women ... a higher heart than men in general...
 
-# ST Slope by Sex and Heart Disease
+### ST Slope by Sex and Heart Disease
 
 ```{r ST_slope_sex_disease}
 
