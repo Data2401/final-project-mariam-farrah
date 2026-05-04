@@ -250,11 +250,11 @@ heart %>%
 
 ```
 
-# Check for Outliers
+## Check for Outliers
 
-To identify potential outliers, we created boxplots and a frequency table to visually evaluate the main variables associated with heart disease in this dataset, individually. These variables including, age, chest pain type, max heart rate, oldpeak, and resting blood pressure.
+To identify potential outliers, we created boxplots to evaluate the main numeric variables associated with heart disease in this dataset, including age, maximum heart rate, oldpeak, and resting blood pressure. Categorical variables such as chest pain type, resting ECG, and ST slope were excluded because they cannot have statistical outliers; instead, their distributions are examined later in the EDA section using bar charts.
 
-## Age Outliers
+### Age Outliers
 
 ```{r age_outliers}
 
@@ -268,7 +268,7 @@ heart %>%
 
 Age does not show any extreme outliers, meaning all the patients fall around a consistent age range.
 
-## Resting Blood Pressure Outliers
+### Resting Blood Pressure Outliers
 
 ```{r resting_bp_outliers}
 
@@ -284,7 +284,7 @@ Resting blood pressure shows several outliers above 150, and one unusually low v
 
 Note: We used "na.rm = TRUE" in geom_boxplot() to suppress the warning indicating a row was removed due to NA values created during data cleaning. Since the warning doesn't affect the visualization and is not indicative of anything significant it was silenced for a cleaner report.
 
-## Max Heart Rate Outliers
+### Max Heart Rate Outliers
 
 ```{r max_hr_outliers}
 
@@ -298,29 +298,7 @@ heart %>%
 
 Max heart heart does have some extreme outliers in the lower end of the spectrum with heart rates below a 100, showing a small subset of patients had significantly reduced exercise capacity in comparison to the rest of the sample.  
 
-## Chest Pain Type Outliers
-
-```{r chest_pain_type_outliers}
-
-heart %>% 
-  tabyl(chest_pain_type) %>% 
-  
-  #decimal to percentage 
-  adorn_pct_formatting() %>% 
-  
-  #sum of rows
-  adorn_totals("row") %>% 
-  
-  kable(caption = "Chest Pain Type Frequency Table") %>% 
-  kable_styling(bootstrap_options = "striped")
-
-```
-
-Box plots are used to evaluate/plot numerical variables, but because chest pain type is a categorical variable it cannot have statistical outliers. However, we evaluate it using a frequency table to determine how chest pain types are distributed throughout the dataset, how often each category appears and how rare/imbalanced a category is in comparison to the rest. We also use functions from the janitor package to calculate the category count, convert them to percentages, and add a total row for easier interpretation.  
-
-Asymptomatic is the most common type of chest pain at 54%, followed by non-anginal pain, atypical angina, and finally typical angina being the least frequent category. This indicates that majority of the patients do not present with classic chest pain symptoms. 
-
-## Oldpeak Outliers
+### Oldpeak Outliers
 
 ```{r oldpeak_outliers}
 
@@ -584,11 +562,13 @@ heart %>%
        y = "Resting Blood Pressure", 
        fill = "Heart Disease") +
   theme_minimal()
+ggplot(heart, aes(x = sex, y = age, fill = sex)) +
+  geom_boxplot() +
+  theme_minimal()
   
 ```
 Women and men show similar resting blood pressure in the non‑disease group.
 However, among individuals with heart disease, women present with higher resting blood pressure than men. This aligns with clinical evidence showing that elevated blood pressure is a stronger predictor of heart disease in women, with risk increasing even at levels as low as 110 mmHg, below the traditional 120 mmHg threshold. As women age and transition through menopause, their resting blood pressure often catches up to and surpasses men’s, sharply increasing cardiovascular risk.
-
 
 # Summary 
 
