@@ -484,8 +484,11 @@ heart %>%
   theme_minimal()
 
 ```
-... Explain
-... reflecting real clinical studies which indicate women tend to present with subtler ecg changes making them harder to disagnos.
+
+Women and men present vastly different resting ECG pattern across disease groups. In women, the no‑disease group makes up the majority of the bar across all Resting ECG categories (ST–T abnormality, LV hypertrophy, and normal). The disease group is very small, so its portion of each bar is minimal. This means that even though women show ECG changes, these changes occur mostly in women without heart disease, reinforcing that Resting ECG abnormalities are not strong indicators of heart disease in women, reflecting clinical studies showing women tend to present with subtler or “nonspecific” ECG changes, making heart disease harder. 
+
+In contrast, men show the expected clinical pattern: the disease group dominates, especially in ST–T abnormalities, followed by LV hypertrophy and then normal results- a pattern more consistent with typical heart disease presentation.
+
 
 ### Chest Pain Type by Sex and Heart Disease
 
