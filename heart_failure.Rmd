@@ -586,7 +586,11 @@ heart %>%
   theme_minimal()
   
 ```
+Women and men show similar resting blood pressure in the non‑disease group.
+However, among individuals with heart disease, women present with higher resting blood pressure than men. This aligns with clinical evidence showing that elevated blood pressure is a stronger predictor of heart disease in women, with risk increasing even at levels as low as 110 mmHg, below the traditional 120 mmHg threshold. As women age and transition through menopause, their resting blood pressure often catches up to and surpasses men’s, sharply increasing cardiovascular risk.
 
+
+# Summary 
 
 Clinically, this aligns with evidence that women often present different ischemic patterns during exercise testing. Women may show fewer classic exercise‑induced heart‑rate limitations, which can make heart disease harder to detect using traditional stress‑test thresholds that were historically validated in male populations.
 
