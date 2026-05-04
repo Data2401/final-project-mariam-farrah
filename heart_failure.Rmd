@@ -509,6 +509,7 @@ heart %>%
 
 ```
 Asymptomatic is the most common chest pain type in the heart disease population, in both women and men.  However, the patterns for the remaining chest pain types differ greatly by sex.
+
 In women, the other chest pain categories' (atypical angina, non‑anginal pain, and typical angina) distribution is relatively flat, showing little variation across chest pain types. Each make up less than 15% of cases, with atypical angina being the least common. This aligns with clinical evidence showing that women often present with non‑classic chest pain, which contributes to under‑recognition of heart disease in female patients
 
 In men, the pattern is more distinct: after asymptomatic pain, typical angina is the next most common, followed by non‑anginal pain, with atypical angina being the least frequent, creating a clear gradient of chest pain types across the males with heart disease population, representing typically associated heart disease ischemic patterns and symptoms.
@@ -529,9 +530,11 @@ heart %>%
   theme_minimal()
 
 ```
+
 Women with no heart disease have a higher oldpeak than men with no heart disease, showing a greater ST segment depression during exercise in the non-disease group. However in the heart diseased population, women and men both have a similar old peak distribution. This aligns with clinical trials showing that old peak is generally an unreliable indicator of heart disease in women than in men.
 
 ### Max Heart Rate by Sex and Heart Disease
+
 ```{r max_hr_sex_disease}
 
 heart %>% 
@@ -545,7 +548,9 @@ heart %>%
   theme_minimal()
 
 ```
-The plot shows men and women differ in exercise response when disease is present with women ... a higher heart than men in general...
+Max heart rate between men and women across the non-disease population is fairly similar. 
+
+The heart disease population however shows a marked gender difference. Women with heart disease reach a higher max heart rate than men with heart disease. With the upper range values reaching over 150 while the men do not reach that level; aligning with evidence that women present different ischemic pattern in comparison to men.  
 
 ### ST Slope by Sex and Heart Disease
 
@@ -580,6 +585,7 @@ heart %>%
 ```
 
 
+Clinically, this aligns with evidence that women often present different ischemic patterns during exercise testing. Women may show fewer classic exercise‑induced heart‑rate limitations, which can make heart disease harder to detect using traditional stress‑test thresholds that were historically validated in male populations.
 
 While this dataset does reflect real‑world gender differences — such as women having less typical chest pain and subtler ECG changes — it’s important to acknowledge the limitations.
 
