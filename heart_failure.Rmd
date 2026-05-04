@@ -566,7 +566,10 @@ heart %>%
   theme_minimal()
 
 ```
-...
+
+In this dataset, men with heart disease most often show a flat ST slope, followed by down, with up being least common. Women show the opposite pattern; downsloping is most common, then flat, and upsloping is rare.
+
+Clinically, ST slope is known to be a stronger predictor of heart disease in women than oldpeak. This is reflective in the chart- over 15% of men with heart disease still show an upward slope (a pattern usually seen in healthier hearts), while fewer than 10% of women do, reinforcing the diagnostic importance of ST slope in identifying heart disease in women.
 
 ### Resting Blood Pressure by Sex and Heart Disease
 
