@@ -24,7 +24,7 @@ To address these question we use the "Heart Failure Prediction Dataset" from Kag
 
 Our approach uses exploratory data analysis techniques to compare how heart‑disease‑related symptoms and indicators appear in men versus women. We begin by using boxplots to identify potential outliers in numeric variables such as age, resting blood pressure, maximum heart rate, and oldpeak. Categorical variables—including chest pain type, resting ECG, and ST slope are evaluated using bar charts and proportion plots to examine distribution patterns across sex and disease status. We then use faceted visualizations to directly compare men and women within the heart‑disease population.
 
-This analytic strategy allows us to determine whether the dataset mirrors known clinical trends, such as women presenting different ECG patterns, showing different chest‑pain distributions, or being underrepresented in diagnostic categories. Ultimately, this analysis helps the reader understand both how heart disease manifests in this dataset and whether these patterns align with real‑world disparities that affect women’s cardiovascular health.
+This strategy allows us to determine whether the dataset mirrors known clinical trends, such as women presenting different ECG patterns, showing different chest‑pain distributions, or being underrepresented in diagnostic categories. Ultimately, this analysis helps the reader understand both how heart disease manifests in this dataset and whether these patterns align with real‑world disparities that affect women’s cardiovascular health.
 
 Source:
 fedesoriano. (September 2021). Heart Failure Prediction Dataset. Retrieved [April 2026] from https://www.kaggle.com/fedesoriano/heart-failure-prediction.
@@ -186,7 +186,7 @@ heart %>%
 ```
 
 
-The table below provides a variable dictionary summarizing each variable in the dataset, including its definition and measurement type. This helps the reader understand the structure of the dataset and the role each variable plays in the analysis.
+The table below provides a variable dictionary summarizing each variable in the dataset, including its definition and measurement type. Along with a background on the explored variables within the analysis to help the reader understand the structure of the dataset and the role each variable plays in the overall analysis.
 
 ```{r variable_dictionary, echo=FALSE}
 
@@ -395,7 +395,8 @@ heart %>%
   geom_boxplot() +
   labs(title = "Oldpeak by Heart Disease Status",
        x = "Heart Disease",
-       y = "Oldpeak") +
+       y = "Oldpeak",
+       fill = "Heart Disease") +
   theme_minimal()
 
 ```
@@ -409,7 +410,8 @@ Individuals with heart disease tend to have a higher oldpeak in comparison to pe
 heart %>% ggplot(aes(x = heart_disease, y = max_hr, fill = heart_disease)) +
   geom_boxplot() +
   labs(title = "Max Heart Rate by Heart Disease Status",
-       x = "Heart Disease Status", y = "Max Heart Rate") +
+       x = "Heart Disease Status", y = "Max Heart Rate", 
+       fill = "Heart Disease") +
   theme_minimal()
  
 ```
@@ -432,6 +434,25 @@ heart %>%
 ```
 
 A down and flat ST slope is associated with patients with heart disease, this chart showcases patients with heart disease are prone to a down or flat ST slope with minimal variance, reinforcing its diagnostic relevance. 
+
+
+```{r resting_bp, echo=FALSE}
+
+# Resting Blood Pressure Distribution (Disease vs. No Disease)
+
+heart %>% 
+  ggplot(aes(x = heart_disease, y = resting_bp, fill = heart_disease)) +
+  #supress warning
+  geom_boxplot(na.rm = TRUE) +
+  labs(title = "Resting Blood Presssure by Heart Disease Status",
+       x = "Heart Disease",
+       y = "Resting Blood Pressure", 
+       fill = "Heart Disease") +
+  theme_minimal()
+
+```
+
+Individuals with heart disease tend to have slightly higher resting blood pressure, as shown in the boxplot. While the difference is not dramatic, the heart‑disease group shows greater spread in the upper range of the distribution, indicating a higher resting blood pressure is more commonly found in heart disease. This suggests that resting blood pressure, alongside other clinical variables, may be a useful indicator when distinguishing individuals with and without heart disease.
 
 
 ```{r resting_ECG, echo=FALSE}
@@ -567,6 +588,7 @@ In this dataset, men with heart disease most often show a flat ST slope, followe
 
 Clinically, ST slope is known to be a stronger predictor of heart disease in women than oldpeak. This is reflective in the chart- over 15% of men with heart disease still show an upward slope (a pattern usually seen in healthier hearts), while fewer than 10% of women do, reinforcing the diagnostic importance of ST slope in identifying heart disease in women.
 
+
 ```{r resting_bp_sex_disease, echo=FALSE}
 
 # Resting Blood Pressure by Sex and Heart Disease
@@ -585,7 +607,7 @@ heart %>%
 ```
 
 Women and men show similar resting blood pressure in the non‑disease group.
-However, among individuals with heart disease, women present with higher resting blood pressure than men. This aligns with clinical evidence showing that elevated blood pressure is a stronger predictor of heart disease in women, with risk increasing even at levels as low as 110 mmHg, below the traditional 120 mmHg threshold. As women age and transition through menopause, their resting blood pressure often catches up to and surpasses men’s, sharply increasing cardiovascular risk.
+However, among individuals with heart disease, women present with higher resting blood pressure than men. This aligns with clinical evidence showing that elevated blood pressure is a stronger predictor of heart disease in women, with risk increasing even at levels as low as 110 mmHg, below the traditional 120 mmHg threshold. As women age and transition through menopause, their resting blood pressure often catches up to and surpasses mens', sharply increasing cardiovascular risk.
 
 # Summary 
 
@@ -593,13 +615,14 @@ This project set out to examine how heart disease presents in the general popula
 
 To answer these questions, we conducted a structured exploratory data analysis using the Heart Failure Prediction Dataset from Kaggle. We evaluated numeric variables with boxplots to identify potential outliers and examined categorical variables using bar charts and proportion plots. Faceted visualizations allowed us to compare heart‑disease vs. non‑heart‑disease groups and to explore gender differences within those groups.
 
-Our analysis revealed several patterns consistent with clinical research. Women in the dataset showed less typical chest‑pain patterns and subtler ECG changes, including differences in ST‑segment slope and exercise‑related indicators. These findings align with evidence that women often present different ischemic patterns during exercise testing, which can make heart disease harder to detect using diagnostic thresholds historically validated in male populations. We also observed that the dataset is heavily skewed toward men, nearly 80% of participants were men, mirroring the persistent underrepresentation of women in cardiovascular research.
+Our analysis revealed several patterns consistent with clinical research. When comparing individuals with and without heart disease, we found that oldpeak, ST‑segment slope, resting blood pressure, resting ECG patterns, chest‑pain type, and maximum heart rate were the strongest differentiators. Heart‑disease patients showed higher oldpeak values, more flat or downsloping ST segments, higher resting blood pressure, more ST‑T abnormalities on resting ECG, a predominance of asymptomatic chest pain, and lower maximum heart rates.
+
+When examining men and women separately, we observed that several indicators behave differently by sex. Among women, resting blood pressure and ST‑segment slope emerged as particularly strong markers of heart disease. Interestingly, blood pressure, which appeared to be only a modest differentiator in the overall disease vs. no‑disease comparison, became a much more prominent and clinically meaningful indicator when focusing specifically on women. This highlights how biological differences shape the way each gender presents cardiovascular symptoms. In contrast, variables such as oldpeak, resting ECG, chest‑pain type, and maximum heart rate were less reliable for women because their patterns overlapped more across disease groups. These findings align with clinical evidence that women often present subtler or non‑classic ischemic patterns, especially during exercise testing, which can make heart disease harder to detect using diagnostic thresholds historically utilized in male populations.
 
 The most significant limitation in the dataset is the gender imbalance, which restricts the strength of conclusions about women’s symptom patterns. Additionally, because the dataset merges five different clinical studies, measurement differences or population variations may influence variable distributions. Future work could incorporate larger, more balanced datasets and include additional clinical variables (such as imaging or biomarkers).
 
-These results suggest that the dataset does capture some real‑world gender differences in heart‑disease presentation, but the imbalance in representation limits how confidently these patterns can be generalized. The findings highlight the importance of inclusive data collection and the need for diagnostic criteria that account for sex‑specific symptom profiles. For readers, this analysis provides a clearer understanding of how heart disease manifests across groups in this dataset and how gender may influence diagnostic indicators.
+These results suggest that the dataset does capture some real‑world gender differences in heart‑disease presentation, but the imbalance in representation limits the strength of conclusions about women symptom patterns but reinforces the broader issue that gender disparities in data collection can influence how heart disease is understood, diagnosed, and modeled. For readers, this analysis provides a clearer understanding of how heart disease manifests across groups in this dataset and how gender may influence diagnostic indicators.
 
-Clinically, this aligns with evidence that women often present different ischemic patterns during exercise testing. Women may show fewer classic exercise‑induced heart‑rate limitations, which can make heart disease harder to detect using traditional stress‑test thresholds that were historically validated in male populations.
 
 
 
